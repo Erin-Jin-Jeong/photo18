@@ -1,0 +1,972 @@
+<!DOCTYPE html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Trình Chỉnh Sửa Ảnh Thông Minh</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      body {
+        font-family: "Inter", sans-serif;
+        background-color: #f3f4f6;
+      }
+      /* Custom scrollbar for better aesthetics */
+      ::-webkit-scrollbar {
+        width: 8px;
+      }
+      ::-webkit-scrollbar-track {
+        background: #e5e7eb;
+      }
+      ::-webkit-scrollbar-thumb {
+        background: #9ca3af;
+        border-radius: 4px;
+      }
+      ::-webkit-scrollbar-thumb:hover {
+        background: #6b7280;
+      }
+
+      /* Canvas container styles */
+      #previewContainer {
+        min-height: 400px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background-color: #e5e7eb;
+        border: 2px dashed #9ca3af;
+        border-radius: 0.75rem;
+        overflow: hidden;
+        position: relative;
+      }
+      #imageCanvas {
+        max-width: 100%;
+        max-height: 100%;
+        display: none; /* Hidden until image is loaded */
+        cursor: default; /* Changed default cursor */
+      }
+      .control-group {
+        @apply flex flex-col space-y-2 p-4 bg-white rounded-xl shadow-lg transition duration-300 hover:shadow-xl;
+      }
+      .btn-primary {
+        @apply bg-indigo-600 text-white font-semibold py-2 px-4 rounded-lg shadow-md hover:bg-indigo-700 transition duration-150 ease-in-out;
+      }
+      .btn-secondary {
+        @apply bg-gray-200 text-gray-800 font-semibold py-2 px-4 rounded-lg shadow-md hover:bg-gray-300 transition duration-150 ease-in-out;
+      }
+      /* Styles for the loading spinner */
+      .spinner {
+        border: 4px solid rgba(255, 255, 255, 0.3);
+        border-top: 4px solid #ffffff;
+        border-radius: 50%;
+        width: 30px;
+        height: 30px;
+        animation: spin 1s linear infinite;
+      }
+      @keyframes spin {
+        0% {
+          transform: rotate(0deg);
+        }
+        100% {
+          transform: rotate(360deg);
+        }
+      }
+      .ai-result {
+        aspect-ratio: 1/1;
+        background-color: #1f2937;
+        border-radius: 0.75rem;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        overflow: hidden;
+        position: relative; /* For download button positioning */
+      }
+      .visible {
+        visibility: visible;
+      }
+      .invisible {
+        visibility: hidden;
+      }
+    </style>
+  </head>
+  <body class="p-4 md:p-8">
+    <div class="max-w-6xl mx-auto">
+      <h1 class="text-3xl font-bold text-gray-900 mb-6 border-b pb-2">
+        🖼️ Trình Chỉnh Sửa Ảnh Thông Minh
+      </h1>
+
+      <div id="editor-section" class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <!-- Cột 1: Controls -->
+        <div class="lg:col-span-1 space-y-6">
+          <!-- Nhóm 1: Tải Ảnh và Tải Xuống -->
+          <div class="control-group">
+            <h2 class="text-xl font-semibold mb-3 text-indigo-600">
+              1. Quản Lý Ảnh
+            </h2>
+            <label
+              for="imageUpload"
+              class="btn-primary block text-center cursor-pointer"
+            >
+              Chọn và Tải Ảnh Lên
+            </label>
+            <input
+              type="file"
+              id="imageUpload"
+              accept="image/*"
+              class="hidden"
+              onchange="handleImageUpload(event)"
+            />
+
+            <button
+              id="downloadBtn"
+              class="btn-secondary w-full opacity-50 cursor-not-allowed"
+              disabled
+              onclick="downloadImage()"
+            >
+              📥 Tải Ảnh Đã Chỉnh Sửa
+            </button>
+            <select
+              id="downloadFormat"
+              class="w-full p-2 border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500"
+            >
+              <option value="image/png">PNG</option>
+              <option value="image/jpeg">JPEG</option>
+              <option value="image/gif">GIF</option>
+              <option value="image/webp">WEBP</option>
+            </select>
+          </div>
+
+          <!-- Nhóm 2: Điều Chỉnh Cơ Bản (Sliders) -->
+          <div class="control-group">
+            <h2 class="text-xl font-semibold mb-3 text-indigo-600">
+              2. Điều Chỉnh Cơ Bản
+            </h2>
+
+            <div id="controls-list" class="space-y-4">
+              <!-- Brightness -->
+              <div class="flex flex-col">
+                <label
+                  for="brightness"
+                  class="font-medium text-gray-700 flex justify-between"
+                >
+                  Độ Sáng: <span id="brightnessValue">100%</span>
+                </label>
+                <input
+                  type="range"
+                  id="brightness"
+                  min="0"
+                  max="200"
+                  value="100"
+                  class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
+                  oninput="applyFilters()"
+                />
+              </div>
+
+              <!-- Contrast -->
+              <div class="flex flex-col">
+                <label
+                  for="contrast"
+                  class="font-medium text-gray-700 flex justify-between"
+                >
+                  Độ Tương Phản: <span id="contrastValue">100%</span>
+                </label>
+                <input
+                  type="range"
+                  id="contrast"
+                  min="0"
+                  max="200"
+                  value="100"
+                  class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
+                  oninput="applyFilters()"
+                />
+              </div>
+
+              <!-- Blur -->
+              <div class="flex flex-col">
+                <label
+                  for="blur"
+                  class="font-medium text-gray-700 flex justify-between"
+                >
+                  Làm Mờ (Blur): <span id="blurValue">0px</span>
+                </label>
+                <input
+                  type="range"
+                  id="blur"
+                  min="0"
+                  max="10"
+                  value="0"
+                  class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
+                  oninput="applyFilters()"
+                />
+              </div>
+            </div>
+          </div>
+
+          <!-- Nhóm 3: Hiệu Ứng và Lật Xoay (Buttons) -->
+          <div class="control-group">
+            <h2 class="text-xl font-semibold mb-3 text-indigo-600">
+              3. Biến Đổi & Cắt
+            </h2>
+            <div class="grid grid-cols-2 gap-3">
+              <button class="btn-secondary" onclick="applyGrayscale()">
+                ⚫ Chuyển Đen Trắng
+              </button>
+              <button class="btn-secondary" onclick="resetFilters()">
+                🔄 Đặt Lại Hiệu Ứng
+              </button>
+              <button class="btn-secondary" onclick="rotateImage(90)">
+                ↩️ Xoay (90°)
+              </button>
+              <button class="btn-secondary" onclick="flipImage('horizontal')">
+                ↔️ Lật Ngang
+              </button>
+
+              <!-- Crop Buttons Added Here -->
+              <button
+                id="cropModeBtn"
+                class="btn-secondary col-span-2"
+                onclick="toggleCropMode()"
+              >
+                ✂️ Chế Độ Cắt
+              </button>
+              <button
+                id="applyCropBtn"
+                class="btn-primary col-span-2 opacity-50 cursor-not-allowed"
+                disabled
+                onclick="performCrop()"
+              >
+                ✅ Áp Dụng Cắt
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Cột 2: Preview Ảnh -->
+        <div class="lg:col-span-2">
+          <!-- NEW: Hiển thị kích thước vùng cắt -->
+          <div
+            id="cropInfo"
+            class="text-sm font-medium text-gray-700 mb-2 invisible"
+          >
+            Vùng chọn: Rộng <span id="cropWidth">0</span>px, Cao
+            <span id="cropHeight">0</span>px
+          </div>
+
+          <div id="previewContainer" class="w-full">
+            <p
+              id="placeholderText"
+              class="text-gray-500 text-lg p-10 text-center"
+            >
+              Vui lòng tải ảnh lên để bắt đầu chỉnh sửa.<br />
+              (Ảnh sẽ được hiển thị và chỉnh sửa tại đây)
+            </p>
+            <canvas id="imageCanvas"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <!-- Section: AI Image Generation -->
+      <div
+        class="mt-12 p-6 bg-white rounded-xl shadow-2xl border border-indigo-100"
+      >
+        <h2 class="text-2xl font-bold text-indigo-600 mb-4 flex items-center">
+          ✨ Tính Năng Thông Minh: Chỉnh Sửa Ảnh bằng AI
+        </h2>
+        <p class="text-gray-600 mb-4">
+          Mô hình AI (<span class="font-semibold text-indigo-500"
+            >gemini-2.5-flash-image-preview</span
+          >) sẽ sử dụng ảnh hiện tại trên canvas làm đầu vào và biến đổi theo mô
+          tả của bạn. **💡 Gợi ý:** Bạn có thể mô tả chi tiết về **góc nhìn**
+          (ví dụ: góc thấp 150cm), **bố cục**, và **ánh sáng** để đạt kết quả
+          mong muốn.
+        </p>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <!-- Input for AI Prompt -->
+          <div class="md:col-span-2 space-y-4">
+            <textarea
+              id="aiPrompt"
+              rows="3"
+              class="w-full p-3 border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500"
+              placeholder="Mô tả sự thay đổi bạn muốn (ví dụ: Thay thế con mèo bằng một con chó husky, làm cho bầu trời có màu tím, phong cách nghệ thuật pixel)"
+            ></textarea>
+            <button
+              id="generateBtn"
+              class="btn-primary w-full"
+              onclick="generateAIImage()"
+            >
+              Tạo/Chỉnh Sửa Ảnh Mới
+            </button>
+          </div>
+
+          <!-- AI Result Display -->
+          <div class="md:col-span-1">
+            <div id="aiResult" class="ai-result">
+              <p class="text-gray-400 text-sm text-center p-4">
+                Ảnh AI sẽ xuất hiện tại đây
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      // Cấu hình Tailwind cho nút tải xuống sau khi AI tạo ảnh
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              primary: "#4f46e5",
+              secondary: "#6366f1",
+            },
+          },
+        },
+      };
+
+      const canvas = document.getElementById("imageCanvas");
+      const ctx = canvas.getContext("2d");
+      const placeholderText = document.getElementById("placeholderText");
+      const downloadBtn = document.getElementById("downloadBtn");
+      const downloadFormat = document.getElementById("downloadFormat");
+      const cropApplyBtn = document.getElementById("applyCropBtn");
+      const cropInfo = document.getElementById("cropInfo");
+
+      let initialImage = null; // Lưu trữ ảnh gốc lúc mới tải (cho Reset toàn bộ)
+      let originalImage = null; // Lưu trữ ảnh đang chỉnh sửa (sau khi crop)
+      let rotationAngle = 0;
+      let flipH = 1; // 1 cho bình thường, -1 cho lật ngang
+
+      // Trạng thái Cắt (Crop)
+      let isCropping = false;
+      let cropStart = { x: 0, y: 0 };
+      let cropRect = null; // Lưu trữ hình chữ nhật cắt {x, y, w, h} theo tọa độ canvas
+
+      // Constants for API calls
+      const apiKey = "";
+      const model = "gemini-2.5-flash-image-preview"; // Model for Image-to-Image editing
+
+      // Chỉ dẫn hệ thống để tăng cường độ chính xác về bố cục/góc nhìn
+      const systemInstruction = {
+        parts: [
+          {
+            text: "Bạn là một chuyên gia chỉnh sửa ảnh AI. Nhiệm vụ của bạn là lấy ảnh đầu vào và áp dụng các thay đổi được mô tả trong prompt của người dùng. Hãy chú ý đặc biệt đến các chi tiết về góc nhìn (perspective), độ cao của máy ảnh (ví dụ: 150cm-200cm), vị trí trung tâm của đối tượng và các yếu tố bố cục (composition) khác để đảm bảo kết quả phù hợp với mô tả nhất có thể.",
+          },
+        ],
+      };
+
+      // --- Hàm Xử Lý Ảnh Cơ Bản ---
+
+      /**
+       * Xử lý việc tải ảnh lên và khởi tạo canvas.
+       * @param {Event} event Sự kiện tải file.
+       */
+      function handleImageUpload(event) {
+        const file = event.target.files[0];
+        if (!file) return;
+
+        const reader = new FileReader();
+        reader.onload = function (e) {
+          const img = new Image();
+          img.onload = function () {
+            initialImage = img;
+            originalImage = img;
+            rotationAngle = 0;
+            flipH = 1;
+            cropRect = null;
+            isCropping = false;
+
+            // Reset sliders
+            document.getElementById("brightness").value = 100;
+            document.getElementById("contrast").value = 100;
+            document.getElementById("blur").value = 0;
+            canvas.style.filter = "";
+
+            // Kích hoạt nút download và hiển thị canvas
+            downloadBtn.disabled = false;
+            downloadBtn.classList.remove("opacity-50", "cursor-not-allowed");
+            placeholderText.style.display = "none";
+            canvas.style.display = "block";
+
+            // Vẽ ảnh gốc lần đầu
+            drawCanvas(originalImage);
+            applyFilters();
+          };
+          img.src = e.target.result;
+        };
+        reader.readAsDataURL(file);
+      }
+
+      /**
+       * Cập nhật các giá trị filter và áp dụng lên canvas.
+       */
+      function applyFilters() {
+        if (!originalImage) return;
+
+        // Lấy giá trị từ sliders và cập nhật hiển thị
+        const brightness = document.getElementById("brightness").value;
+        const contrast = document.getElementById("contrast").value;
+        const blur = document.getElementById("blur").value;
+
+        document.getElementById(
+          "brightnessValue"
+        ).textContent = `${brightness}%`;
+        document.getElementById("contrastValue").textContent = `${contrast}%`;
+        document.getElementById("blurValue").textContent = `${blur}px`;
+
+        // Lấy giá trị grayscale từ CSS
+        const isGrayscale = canvas.style.filter.includes("grayscale(1)");
+
+        // Áp dụng CSS filters vào canvas
+        let filterString = `brightness(${brightness}%) contrast(${contrast}%) blur(${blur}px)`;
+        if (isGrayscale) {
+          filterString += ` grayscale(1)`;
+        }
+
+        canvas.style.filter = filterString.trim();
+
+        // Re-draw the canvas to ensure transformations are correct
+        drawCanvas(originalImage);
+      }
+
+      /**
+       * Đặt lại tất cả các filter về giá trị mặc định, bao gồm hoàn tác crop.
+       */
+      function resetFilters() {
+        if (!initialImage) return;
+
+        // Đặt lại Sliders
+        document.getElementById("brightness").value = 100;
+        document.getElementById("contrast").value = 100;
+        document.getElementById("blur").value = 0;
+
+        // Đặt lại các biến đổi
+        rotationAngle = 0;
+        flipH = 1;
+
+        // Đặt lại về ảnh gốc ban đầu (hình lúc chưa cắt)
+        originalImage = initialImage;
+
+        // Đặt lại Crop state
+        cropRect = null;
+        if (isCropping) toggleCropMode();
+
+        // Đặt lại CSS filter
+        canvas.style.filter = "";
+
+        applyFilters();
+        drawCanvas(originalImage);
+      }
+
+      /**
+       * Chuyển đổi ảnh sang đen trắng hoặc ngược lại.
+       */
+      function applyGrayscale() {
+        if (!originalImage) return;
+
+        const currentFilter = canvas.style.filter;
+        // Toggle grayscale
+        if (currentFilter.includes("grayscale(1)")) {
+          canvas.style.filter = currentFilter
+            .replace("grayscale(1)", "")
+            .trim();
+        } else {
+          canvas.style.filter += " grayscale(1)";
+        }
+
+        // Reapply filters to make sure other settings are preserved
+        applyFilters();
+      }
+
+      /**
+       * Xoay ảnh theo góc.
+       * @param {number} angle Góc xoay (ví dụ: 90).
+       */
+      function rotateImage(angle) {
+        if (!originalImage) return;
+        rotationAngle = (rotationAngle + angle) % 360;
+        drawCanvas(originalImage);
+      }
+
+      /**
+       * Lật ảnh theo chiều ngang.
+       * @param {string} axis Trục lật ('horizontal').
+       */
+      function flipImage(axis) {
+        if (!originalImage) return;
+        if (axis === "horizontal") {
+          flipH *= -1;
+        }
+        drawCanvas(originalImage);
+      }
+
+      /**
+       * Vẽ ảnh lên canvas, áp dụng xoay và lật.
+       * @param {HTMLImageElement} img Ảnh gốc.
+       */
+      function drawCanvas(img) {
+        if (!img) return;
+
+        // Tính toán kích thước canvas mới sau khi xoay
+        const isRotated = rotationAngle % 180 !== 0;
+        const newWidth = isRotated ? img.height : img.width;
+        const newHeight = isRotated ? img.width : img.height;
+
+        // Cập nhật kích thước canvas
+        canvas.width = newWidth;
+        canvas.height = newHeight;
+
+        // Thiết lập vị trí tâm xoay
+        ctx.clearRect(0, 0, newWidth, newHeight);
+        ctx.save();
+        ctx.translate(newWidth / 2, newHeight / 2);
+
+        // Áp dụng xoay
+        ctx.rotate((rotationAngle * Math.PI) / 180);
+
+        // Áp dụng lật
+        ctx.scale(flipH, 1);
+
+        // Vẽ ảnh
+        let drawX = -img.width / 2;
+        let drawY = -img.height / 2;
+        let drawW = img.width;
+        let drawH = img.height;
+
+        ctx.drawImage(img, drawX, drawY, drawW, drawH);
+        ctx.restore();
+
+        // --- DRAW CROP OVERLAY (Vẽ lớp phủ khi cắt) ---
+        if (isCropping && cropRect) {
+          // Đảm bảo không bị ảnh hưởng bởi rotation/scale của hình ảnh
+          ctx.save();
+          ctx.setTransform(1, 0, 0, 1, 0, 0); // Đặt lại ma trận biến đổi
+
+          ctx.fillStyle = "rgba(0, 0, 0, 0.5)";
+
+          // 1. Vẽ 4 hình chữ nhật để che đi khu vực bên ngoài cropRect
+
+          // Top
+          ctx.fillRect(0, 0, canvas.width, cropRect.y);
+          // Bottom
+          ctx.fillRect(
+            0,
+            cropRect.y + cropRect.h,
+            canvas.width,
+            canvas.height - (cropRect.y + cropRect.h)
+          );
+          // Left
+          ctx.fillRect(0, cropRect.y, cropRect.x, cropRect.h);
+          // Right
+          ctx.fillRect(
+            cropRect.x + cropRect.w,
+            cropRect.y,
+            canvas.width - (cropRect.x + cropRect.w),
+            cropRect.h
+          );
+
+          // 2. Vẽ đường viền
+          ctx.strokeStyle = "#FFFFFF";
+          ctx.lineWidth = 2;
+          ctx.setLineDash([5, 5]);
+          ctx.strokeRect(cropRect.x, cropRect.y, cropRect.w, cropRect.h);
+          ctx.setLineDash([]); // Reset line dash
+
+          ctx.restore(); // Khôi phục ma trận biến đổi
+        }
+
+        // Cập nhật kích thước hiển thị để fit container
+        canvas.style.maxWidth = "100%";
+        canvas.style.maxHeight = "100%";
+      }
+
+      // --- Chức năng Cắt (Crop) ---
+
+      /**
+       * Bật/tắt chế độ cắt.
+       */
+      function toggleCropMode() {
+        if (!originalImage) return;
+
+        isCropping = !isCropping;
+        const cropBtn = document.getElementById("cropModeBtn");
+
+        if (isCropping) {
+          // Bật chế độ cắt
+          cropBtn.classList.replace("btn-secondary", "bg-red-500");
+          cropBtn.classList.add("text-white");
+          cropBtn.textContent = "❌ Hủy Cắt";
+          canvas.style.cursor = "crosshair";
+          cropApplyBtn.disabled = true;
+          cropApplyBtn.classList.add("opacity-50", "cursor-not-allowed");
+          cropRect = null;
+          cropInfo.classList.remove("invisible"); // Hiển thị panel kích thước
+        } else {
+          // Tắt chế độ cắt
+          cropBtn.classList.replace("bg-red-500", "btn-secondary");
+          cropBtn.classList.remove("text-white");
+          cropBtn.textContent = "✂️ Chế Độ Cắt";
+          canvas.style.cursor = "default";
+          cropApplyBtn.disabled = true;
+          cropApplyBtn.classList.add("opacity-50", "cursor-not-allowed");
+          cropRect = null;
+          cropInfo.classList.add("invisible"); // Ẩn panel kích thước
+        }
+        drawCanvas(originalImage);
+      }
+
+      /**
+       * Thực hiện cắt ảnh dựa trên vùng đã chọn.
+       */
+      function performCrop() {
+        if (!originalImage || !cropRect) return;
+
+        // 1. Canvas để chứa ảnh đã biến đổi (Rotate, Flip)
+        const widthAfterRotate =
+          rotationAngle % 180 !== 0
+            ? originalImage.height
+            : originalImage.width;
+        const heightAfterRotate =
+          rotationAngle % 180 !== 0
+            ? originalImage.width
+            : originalImage.height;
+
+        const fullTransformCanvas = document.createElement("canvas");
+        const ftCtx = fullTransformCanvas.getContext("2d");
+        fullTransformCanvas.width = widthAfterRotate;
+        fullTransformCanvas.height = heightAfterRotate;
+
+        // **CHỈ** áp dụng Rotate và Flip (không áp dụng CSS filter)
+        ftCtx.translate(
+          fullTransformCanvas.width / 2,
+          fullTransformCanvas.height / 2
+        );
+        ftCtx.rotate((rotationAngle * Math.PI) / 180);
+        ftCtx.scale(flipH, 1);
+        ftCtx.drawImage(
+          originalImage,
+          -originalImage.width / 2,
+          -originalImage.height / 2,
+          originalImage.width,
+          originalImage.height
+        );
+        ftCtx.restore();
+
+        // 2. Tính toán tỷ lệ giữa Canvas hiển thị và ảnh đã biến đổi (Dùng để chuyển tọa độ)
+        const ratioX = fullTransformCanvas.width / canvas.width;
+        const ratioY = fullTransformCanvas.height / canvas.height;
+
+        // 3. Tính toán tọa độ cắt trong kích thước ảnh gốc đã biến đổi
+        // Trong hàm performCrop, cropRect đã ở đúng tỉ lệ canvas nội bộ,
+        // nên ta chỉ cần nhân tỉ lệ 1:1 giữa canvas nội bộ và ảnh gốc đã biến đổi.
+        const cropX = cropRect.x * ratioX;
+        const cropY = cropRect.y * ratioY;
+        const cropW = cropRect.w * ratioX;
+        const cropH = cropRect.h * ratioY;
+
+        // 4. Canvas cuối cùng (Canvas kết quả sau khi cắt)
+        const finalCanvas = document.createElement("canvas");
+        const finalCtx = finalCanvas.getContext("2d");
+        finalCanvas.width = cropW;
+        finalCanvas.height = cropH;
+
+        // Cắt từ fullTransformCanvas sang finalCanvas
+        finalCtx.drawImage(
+          fullTransformCanvas,
+          cropX,
+          cropY,
+          cropW,
+          cropH, // Source (vùng cắt trên ảnh đã biến đổi)
+          0,
+          0,
+          cropW,
+          cropH // Destination (finalCanvas)
+        );
+
+        // 5. Cập nhật originalImage thành ảnh đã cắt
+        const newImg = new Image();
+        newImg.onload = function () {
+          originalImage = newImg;
+
+          // Đặt lại các biến đổi vì chúng đã được "đóng gói" vào ảnh mới
+          rotationAngle = 0;
+          flipH = 1;
+
+          // Đặt lại Crop Mode và vẽ ảnh mới
+          toggleCropMode();
+          cropRect = null;
+          // Giữ lại giá trị filter trên sliders và áp dụng
+          applyFilters();
+        };
+        newImg.src = finalCanvas.toDataURL();
+      }
+
+      // --- Event Listeners for Cropping (ĐÃ SỬA LỖI TỈ LỆ) ---
+      canvas.addEventListener("mousedown", (e) => {
+        if (!originalImage || !isCropping) return;
+
+        // NEW: Lấy tỷ lệ scaling giữa kích thước hiển thị (rect) và kích thước nội bộ (canvas.width/height)
+        const rect = canvas.getBoundingClientRect();
+        const scaleX = canvas.width / rect.width;
+        const scaleY = canvas.height / rect.height;
+
+        // Scale tọa độ chuột từ kích thước hiển thị lên kích thước nội bộ
+        cropStart.x = e.offsetX * scaleX;
+        cropStart.y = e.offsetY * scaleY;
+
+        cropRect = null;
+        cropApplyBtn.disabled = true;
+        cropApplyBtn.classList.add("opacity-50", "cursor-not-allowed");
+        document.getElementById("cropWidth").textContent = "0";
+        document.getElementById("cropHeight").textContent = "0";
+        drawCanvas(originalImage);
+      });
+
+      canvas.addEventListener("mousemove", (e) => {
+        if (!originalImage || !isCropping || e.buttons !== 1) return;
+
+        // NEW: Lấy tỷ lệ scaling giữa kích thước hiển thị (rect) và kích thước nội bộ (canvas.width/height)
+        const rect = canvas.getBoundingClientRect();
+        const scaleX = canvas.width / rect.width;
+        const scaleY = canvas.height / rect.height;
+
+        // Lấy tọa độ hiện tại (tương đối với canvas) và scale lên
+        const scaledCurrentX = e.offsetX * scaleX;
+        const scaledCurrentY = e.offsetY * scaleY;
+
+        // **Cải thiện độ chính xác: Giới hạn tọa độ đã scale trong ranh giới canvas thực tế**
+        const clampedX = Math.min(Math.max(0, scaledCurrentX), canvas.width);
+        const clampedY = Math.min(Math.max(0, scaledCurrentY), canvas.height);
+
+        // Tính toán thông số hình chữ nhật
+        const x = Math.min(cropStart.x, clampedX);
+        const y = Math.min(cropStart.y, clampedY);
+        const w = Math.abs(cropStart.x - clampedX);
+        const h = Math.abs(cropStart.y - clampedY);
+
+        if (w > 10 && h > 10) {
+          // cropRect được lưu trữ bằng tọa độ pixel nội bộ, đã được scale chính xác
+          cropRect = { x, y, w, h };
+
+          // Cập nhật hiển thị kích thước vùng chọn (bằng pixel nội bộ)
+          document.getElementById("cropWidth").textContent = Math.round(w);
+          document.getElementById("cropHeight").textContent = Math.round(h);
+          cropInfo.classList.remove("invisible");
+
+          cropApplyBtn.disabled = false;
+          cropApplyBtn.classList.remove("opacity-50", "cursor-not-allowed");
+        } else {
+          cropRect = null;
+          cropInfo.classList.add("invisible");
+
+          cropApplyBtn.disabled = true;
+          cropApplyBtn.classList.add("opacity-50", "cursor-not-allowed");
+        }
+
+        drawCanvas(originalImage);
+      });
+
+      canvas.addEventListener("mouseup", (e) => {
+        // No action needed here
+      });
+
+      /**
+       * Tải ảnh đã chỉnh sửa về máy.
+       */
+      function downloadImage() {
+        if (!originalImage) return;
+
+        const finalCanvas = document.createElement("canvas");
+        const finalCtx = finalCanvas.getContext("2d");
+
+        const isRotated = rotationAngle % 180 !== 0;
+        finalCanvas.width = isRotated
+          ? originalImage.height
+          : originalImage.width;
+        finalCanvas.height = isRotated
+          ? originalImage.width
+          : originalImage.height;
+
+        const filterString = canvas.style.filter;
+        finalCtx.filter = filterString;
+
+        finalCtx.translate(finalCanvas.width / 2, finalCanvas.height / 2);
+        finalCtx.rotate((rotationAngle * Math.PI) / 180);
+        finalCtx.scale(flipH, 1);
+
+        let drawX = -originalImage.width / 2;
+        let drawY = -originalImage.height / 2;
+        let drawW = originalImage.width;
+        let drawH = originalImage.height;
+        finalCtx.drawImage(originalImage, drawX, drawY, drawW, drawH);
+
+        const format = downloadFormat.value;
+        const extension = format.split("/")[1];
+
+        finalCanvas.toBlob(
+          function (blob) {
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement("a");
+            a.href = url;
+            a.download = `edited_image_${Date.now()}.${extension}`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+          },
+          format,
+          0.9
+        );
+      }
+
+      /**
+       * Lấy ảnh đang chỉnh sửa trên canvas dưới dạng Base64.
+       */
+      function getImageBase64() {
+        if (!originalImage) return null;
+
+        // Tạo một canvas tạm thời với kích thước ảnh gốc sau khi crop
+        const tempCanvas = document.createElement("canvas");
+        const tempCtx = tempCanvas.getContext("2d");
+
+        tempCanvas.width = originalImage.width;
+        tempCanvas.height = originalImage.height;
+
+        // Vẽ ảnh gốc (đã crop) lên canvas tạm thời
+        tempCtx.drawImage(
+          originalImage,
+          0,
+          0,
+          originalImage.width,
+          originalImage.height
+        );
+
+        // Chuyển canvas thành Base64
+        const dataURL = tempCanvas.toDataURL("image/png");
+        return dataURL.split(",")[1]; // Chỉ lấy phần data
+      }
+
+      // --- Hàm Xử Lý AI Image Generation ---
+
+      /**
+       * Thực hiện tạo/chỉnh sửa ảnh từ mô tả và ảnh đầu vào.
+       */
+      async function generateAIImage() {
+        const prompt = document.getElementById("aiPrompt").value.trim();
+        const resultDiv = document.getElementById("aiResult");
+        const generateBtn = document.getElementById("generateBtn");
+
+        if (!prompt) {
+          resultDiv.innerHTML = `<p class="text-red-400 text-sm text-center p-4">Vui lòng nhập mô tả để tạo ảnh!</p>`;
+          return;
+        }
+
+        // Xử lý ảnh đầu vào (Image-to-Image)
+        const base64ImageData = getImageBase64();
+        let contents = [{ parts: [{ text: prompt }] }];
+        let modalityText = "Mô hình AI tạo ảnh Text-to-Image...";
+
+        if (base64ImageData) {
+          contents = [
+            {
+              parts: [
+                { text: prompt },
+                {
+                  inlineData: {
+                    mimeType: "image/png",
+                    data: base64ImageData,
+                  },
+                },
+              ],
+            },
+          ];
+          modalityText = "Mô hình AI chỉnh sửa ảnh Image-to-Image...";
+        }
+
+        // Hiển thị trạng thái tải
+        generateBtn.disabled = true;
+        generateBtn.innerHTML = `<div class="flex items-center justify-center space-x-2"><div class="spinner"></div><span>${modalityText}</span></div>`;
+        resultDiv.innerHTML =
+          '<div class="flex items-center justify-center h-full"><div class="spinner border-t-white"></div></div>';
+
+        try {
+          const payload = {
+            contents: contents,
+            generationConfig: {
+              responseModalities: ["TEXT", "IMAGE"],
+            },
+            systemInstruction: systemInstruction,
+          };
+
+          const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`;
+
+          let response;
+          let delay = 1000;
+          const maxRetries = 5;
+
+          // Exponential Backoff implementation
+          for (let i = 0; i < maxRetries; i++) {
+            response = await fetch(apiUrl, {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify(payload),
+            });
+
+            if (response.ok) {
+              break;
+            }
+            if (response.status === 429 && i < maxRetries - 1) {
+              // Too many requests
+              await new Promise((resolve) => setTimeout(resolve, delay));
+              delay *= 2;
+            } else {
+              throw new Error(`API returned status ${response.status}`);
+            }
+          }
+
+          if (!response || !response.ok) {
+            throw new Error("Lỗi mạng hoặc server API.");
+          }
+
+          const result = await response.json();
+
+          const base64Data = result?.candidates?.[0]?.content?.parts?.find(
+            (p) => p.inlineData
+          )?.inlineData?.data;
+
+          if (base64Data) {
+            const imageUrl = `data:image/png;base64,${base64Data}`;
+
+            resultDiv.innerHTML = `
+                        <img src="${imageUrl}" alt="AI Generated Image" class="w-full h-full object-cover rounded-xl" />
+                    `;
+
+            // Thêm nút tải xuống cho ảnh AI
+            const downloadAI = document.createElement("a");
+            downloadAI.href = imageUrl;
+            downloadAI.download = `ai_image_${Date.now()}.png`;
+            downloadAI.className = "btn-primary mt-2 block text-center";
+            downloadAI.textContent = "Tải Ảnh AI";
+
+            // Add download button below the image
+            const container = document.createElement("div");
+            container.className =
+              "absolute bottom-3 left-0 right-0 p-3 bg-black bg-opacity-50 flex justify-center rounded-b-xl";
+            container.appendChild(downloadAI);
+            resultDiv.appendChild(container);
+          } else {
+            resultDiv.innerHTML = `<p class="text-red-400 text-sm text-center p-4">Không thể tạo ảnh. Vui lòng thử lại với mô tả khác.</p>`;
+          }
+        } catch (error) {
+          console.error("AI Image Generation Error:", error);
+          resultDiv.innerHTML = `<p class="text-red-400 text-sm text-center p-4">Lỗi: ${error.message}. Kiểm tra console để biết chi tiết.</p>`;
+        } finally {
+          generateBtn.disabled = false;
+          generateBtn.innerHTML = "Tạo/Chỉnh Sửa Ảnh Mới";
+        }
+      }
+    </script>
+  </body>
+</html>
