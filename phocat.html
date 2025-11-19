@@ -13,7 +13,8 @@
       /* Thiết lập font Inter cho giao diện */
       body {
         font-family: "Inter", sans-serif;
-        background-color: #f3f4f6;
+        background-color: #000000;
+        color: #44976d;
       }
       /* Custom scrollbar for better aesthetics */
       ::-webkit-scrollbar {
@@ -89,883 +90,1399 @@
       .invisible {
         visibility: hidden;
       }
+
+      /* something new s */
+      .sidenav {
+        height: 100%;
+        width: 0;
+        position: fixed;
+        z-index: 1;
+        top: 0;
+        left: 0;
+        background-color: #111;
+        overflow-x: hidden;
+        transition: 0.5s;
+        padding-top: 60px;
+      }
+
+      .sidenav a {
+        padding: 8px 8px 8px 32px;
+        text-decoration: none;
+        font-size: 25px;
+        color: #818181;
+        display: block;
+        transition: 0.3s;
+      }
+
+      .sidenav a:hover {
+        color: #f1f1f1;
+      }
+
+      .sidenav .closebtn {
+        position: absolute;
+        top: 0;
+        right: 25px;
+        font-size: 36px;
+        margin-left: 50px;
+      }
+
+      #main {
+        transition: margin-left 0.5s;
+        padding: 16px;
+      }
+
+      @media screen and (max-height: 450px) {
+        .sidenav {
+          padding-top: 15px;
+        }
+        .sidenav a {
+          font-size: 18px;
+        }
+      }
+      /* something new e */
+
+      /*  no1 s */
+     .accordion {
+  background-color: #eee;
+  color: #444;
+  cursor: pointer;
+  padding: 18px;
+  width: 100%;
+  border: none;
+  text-align: left;
+  outline: none;
+  font-size: 15px;
+  transition: 0.4s;
+}
+
+.active, .accordion:hover {
+  background-color: #ccc; 
+}
+
+.panel {
+  padding: 0 18px;
+  display: none;
+  background-color: white;
+  overflow: hidden;
+}
+      /* no1 e */
+
     </style>
   </head>
   <body class="p-4 md:p-8">
-    <div class="max-w-6xl mx-auto">
-      <h1 class="text-3xl font-extrabold text-gray-900 mb-6 border-b pb-2">
-        🖼️ Trình Chỉnh Sửa Ảnh Thông Minh
-      </h1>
+    <!-- something new s -->
 
-      <div id="editor-section" class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        <!-- Cột 1: Controls -->
-        <div class="lg:col-span-1 space-y-6">
-          <!-- Nhóm 1: Tải Ảnh và Tải Xuống -->
-          <div class="control-group">
-            <h2 class="text-xl font-semibold mb-3 text-indigo-600">
-              1. Quản Lý Ảnh
-            </h2>
-            <label
-              for="imageUpload"
-              class="btn-primary block text-center cursor-pointer"
-            >
-              Chọn và Tải Ảnh Lên
-            </label>
-            <input
-              type="file"
-              id="imageUpload"
-              accept="image/*"
-              class="hidden"
-              onchange="handleImageUpload(event)"
-            />
+    <div id="mySidenav" class="sidenav">
+      <a href="javascript:void(0)" class="closebtn" onclick="closeNav()"
+        >&times;</a
+      >
+      
+      <!-- <a href="#">About</a>
+              <a href="#">Services</a>
+              <a href="#">Clients</a>
+              <a href="#">Contact</a> -->
+      <!-- Cột 1: Controls -->
+      <div class="lg:col-span-1 space-y-6" style="padding: 0 32px">
+        <!-- Nhóm 1: Tải Ảnh và Tải Xuống -->
+        <div class="control-group">
 
-            <button
-              id="downloadBtn"
-              class="btn-secondary w-full opacity-50 cursor-not-allowed"
-              disabled
-              onclick="downloadImage()"
-            >
-              📥 Tải Ảnh Đã Chỉnh Sửa
-            </button>
-            <select
-              id="downloadFormat"
-              class="w-full p-2 border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500"
-            >
-              <option value="image/png">PNG</option>
-              <option value="image/jpeg">JPEG</option>
-              <option value="image/gif">GIF</option>
-              <option value="image/webp">WEBP</option>
-            </select>
-          </div>
 
-          <!-- Nhóm 2: Điều Chỉnh Cơ Bản -->
-          <div class="control-group">
-            <h2 class="text-xl font-semibold mb-3 text-indigo-600">
-              2. Điều Chỉnh Cơ Bản
-            </h2>
+          <!-- no1 s -->
+          <h2>Accordion</h2>
 
-            <div id="controls-list" class="space-y-4">
-              <div class="flex flex-col">
-                <label
-                  for="brightness"
-                  class="font-medium text-gray-700 flex justify-between"
-                  >Độ Sáng:</label
-                >
-                <div class="flex items-center space-x-2">
-                  <input
-                    type="number"
-                    id="brightness"
-                    min="0"
-                    max="200"
-                    value="100"
-                    class="w-full p-2 border border-gray-300 rounded-lg text-sm"
-                    oninput="applyFilters()"
-                  />
-                  <span class="text-sm text-gray-500">%</span>
-                </div>
-              </div>
-              <div class="flex flex-col">
-                <label
-                  for="contrast"
-                  class="font-medium text-gray-700 flex justify-between"
-                  >Độ Tương Phản:</label
-                >
-                <div class="flex items-center space-x-2">
-                  <input
-                    type="number"
-                    id="contrast"
-                    min="0"
-                    max="200"
-                    value="100"
-                    class="w-full p-2 border border-gray-300 rounded-lg text-sm"
-                    oninput="applyFilters()"
-                  />
-                  <span class="text-sm text-gray-500">%</span>
-                </div>
-              </div>
-              <div class="flex flex-col">
-                <label
-                  for="blur"
-                  class="font-medium text-gray-700 flex justify-between"
-                  >Làm Mờ (Blur):</label
-                >
-                <div class="flex items-center space-x-2">
-                  <input
-                    type="number"
-                    id="blur"
-                    min="0"
-                    max="10"
-                    step="0.1"
-                    value="0"
-                    class="w-full p-2 border border-gray-300 rounded-lg text-sm"
-                    oninput="applyFilters()"
-                  />
-                  <span class="text-sm text-gray-500">px</span>
-                </div>
-              </div>
-            </div>
-          </div>
+<button class="accordion">Section 1</button>
+<div class="panel">
+  <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+</div>
 
-          <!-- Nhóm 3: Biến Đổi & Cắt -->
-          <div class="control-group">
-            <h2 class="text-xl font-semibold mb-3 text-indigo-600">
-              3. Biến Đổi & Cắt
-            </h2>
-            <div class="grid grid-cols-2 gap-3">
-              <button class="btn-secondary" onclick="applyGrayscale()">
-                ⚫ Chuyển Đen Trắng
-              </button>
-              <button class="btn-secondary" onclick="resetFilters()">
-                🔄 Đặt Lại Hiệu Ứng
-              </button>
-              <button class="btn-secondary" onclick="rotateImage(90)">
-                ↩️ Xoay (90°)
-              </button>
-              <button class="btn-secondary" onclick="flipImage('horizontal')">
-                ↔️ Lật Ngang
-              </button>
+<button class="accordion">Section 2</button>
+<div class="panel">
+  <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+</div>
 
-              <button
-                id="cropModeBtn"
-                class="btn-secondary col-span-2"
-                onclick="toggleCropMode()"
+<button class="accordion">Section 3</button>
+<div class="panel">
+  <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+</div>
+
+<script>
+var acc = document.getElementsByClassName("accordion");
+var i;
+
+for (i = 0; i < acc.length; i++) {
+  acc[i].addEventListener("click", function() {
+    this.classList.toggle("active");
+    var panel = this.nextElementSibling;
+    if (panel.style.display === "block") {
+      panel.style.display = "none";
+    } else {
+      panel.style.display = "block";
+    }
+  });
+}
+</script>
+          <!-- no 1 e -->
+
+          <h2 class="text-xl font-semibold mb-3 text-indigo-600">
+            1. Quản Lý Ảnh
+          </h2>
+          <label
+            for="imageUpload"
+            class="btn-primary block text-center cursor-pointer"
+          >
+            Chọn và Tải Ảnh Lên
+          </label>
+          <input
+            type="file"
+            id="imageUpload"
+            accept="image/*"
+            class="hidden"
+            onchange="handleImageUpload(event)"
+          />
+
+          <button
+            id="downloadBtn"
+            class="btn-secondary w-full opacity-50 cursor-not-allowed"
+            disabled
+            onclick="downloadImage()"
+          >
+            📥 Tải Ảnh Đã Chỉnh Sửa
+          </button>
+          <select
+            id="downloadFormat"
+            class="w-full p-2 border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500 "
+          >
+            <option value="image/png">PNG</option>
+            <option value="image/jpeg">JPEG</option>
+            <option value="image/gif">GIF</option>
+            <option value="image/webp">WEBP</option>
+          </select>
+        </div>
+
+        <!-- Nhóm 2: Điều Chỉnh Cơ Bản -->
+        <div class="control-group">
+          <h2 class="text-xl font-semibold mb-3 text-indigo-600">
+            2. Điều Chỉnh Cơ Bản
+          </h2>
+
+          <div id="controls-list" class="space-y-4">
+            <div class="flex flex-col">
+              <label
+                for="brightness"
+                class="font-medium text-gray-700 flex justify-between"
+                >Độ Sáng:</label
               >
-                ✂️ Chế Độ Cắt
-              </button>
-              <button
-                id="applyCropBtn"
-                class="btn-primary col-span-2 opacity-50 cursor-not-allowed"
-                disabled
-                onclick="performCrop()"
-              >
-                ✅ Áp Dụng Cắt
-              </button>
-            </div>
-          </div>
-
-          <!-- Nhóm 4: Thêm Chữ và Nền -->
-          <div class="control-group">
-            <h2 class="text-xl font-semibold mb-3 text-indigo-600">
-              4. Thêm/Sửa Chú Thích Văn Bản
-            </h2>
-
-            <textarea
-              id="textInput"
-              rows="2"
-              class="w-full p-2 border border-gray-300 rounded-lg text-sm"
-              placeholder="Nhập chữ cần thêm/sửa..."
-              oninput="syncInputsToActiveAnnotation()"
-            ></textarea>
-
-            <div class="grid grid-cols-2 gap-3">
-              <div class="flex flex-col">
-                <label for="fontSize" class="text-xs font-medium text-gray-700"
-                  >Cỡ Chữ (px)</label
-                >
+              <div class="flex items-center space-x-2">
                 <input
                   type="number"
-                  id="fontSize"
-                  value="30"
-                  min="10"
+                  id="brightness"
+                  min="0"
                   max="200"
-                  class="p-2 border border-gray-300 rounded-lg text-sm"
-                  oninput="syncInputsToActiveAnnotation()"
+                  value="100"
+                  class="w-full p-2 border border-gray-300 rounded-lg text-sm"
+                  oninput="applyFilters()"
                 />
-              </div>
-              <div class="flex flex-col">
-                <label
-                  for="textPositionX"
-                  class="text-xs font-medium text-gray-700"
-                  >Vị trí X</label
-                >
-                <input
-                  type="number"
-                  id="textPositionX"
-                  value="50"
-                  class="p-2 border border-gray-300 rounded-lg text-sm"
-                  oninput="syncInputsToActiveAnnotation()"
-                />
-              </div>
-              <div class="flex flex-col">
-                <label for="textColor" class="text-xs font-medium text-gray-700"
-                  >Màu Chữ</label
-                >
-                <input
-                  type="color"
-                  id="textColor"
-                  value="#FFFFFF"
-                  class="h-8 p-0 border border-gray-300 rounded-lg cursor-pointer"
-                  oninput="syncInputsToActiveAnnotation()"
-                />
-              </div>
-              <div class="flex flex-col">
-                <label
-                  for="textPositionY"
-                  class="text-xs font-medium text-gray-700"
-                  >Vị trí Y</label
-                >
-                <input
-                  type="number"
-                  id="textPositionY"
-                  value="50"
-                  class="p-2 border border-gray-300 rounded-lg text-sm"
-                  oninput="syncInputsToActiveAnnotation()"
-                />
+                <span class="text-sm text-gray-500">%</span>
               </div>
             </div>
             <div class="flex flex-col">
-              <label for="textBgColor" class="text-xs font-medium text-gray-700"
-                >Màu Nền Chữ (Mặc định trong suốt nếu không phải màu đen)</label
+              <label
+                for="contrast"
+                class="font-medium text-gray-700 flex justify-between"
+                >Độ Tương Phản:</label
+              >
+              <div class="flex items-center space-x-2">
+                <input
+                  type="number"
+                  id="contrast"
+                  min="0"
+                  max="200"
+                  value="100"
+                  class="w-full p-2 border border-gray-300 rounded-lg text-sm"
+                  oninput="applyFilters()"
+                />
+                <span class="text-sm text-gray-500">%</span>
+              </div>
+            </div>
+            <div class="flex flex-col">
+              <label
+                for="blur"
+                class="font-medium text-gray-700 flex justify-between"
+                >Làm Mờ (Blur):</label
+              >
+              <div class="flex items-center space-x-2">
+                <input
+                  type="number"
+                  id="blur"
+                  min="0"
+                  max="10"
+                  step="0.1"
+                  value="0"
+                  class="w-full p-2 border border-gray-300 rounded-lg text-sm"
+                  oninput="applyFilters()"
+                />
+                <span class="text-sm text-gray-500">px</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Nhóm 3: Biến Đổi & Cắt -->
+        <div class="control-group">
+          <h2 class="text-xl font-semibold mb-3 text-indigo-600">
+            3. Biến Đổi & Cắt
+          </h2>
+          <div class="grid grid-cols-2 gap-3">
+            <button class="btn-secondary" onclick="applyGrayscale()">
+              ⚫ Chuyển Đen Trắng
+            </button>
+            <button class="btn-secondary" onclick="resetFilters()">
+              🔄 Đặt Lại Hiệu Ứng
+            </button>
+            <button class="btn-secondary" onclick="rotateImage(90)">
+              ↩️ Xoay (90°)
+            </button>
+            <button class="btn-secondary" onclick="flipImage('horizontal')">
+              ↔️ Lật Ngang
+            </button>
+
+            <button
+              id="cropModeBtn"
+              class="btn-secondary col-span-2"
+              onclick="toggleCropMode()"
+            >
+              ✂️ Chế Độ Cắt
+            </button>
+            <button
+              id="applyCropBtn"
+              class="btn-primary col-span-2 opacity-50 cursor-not-allowed"
+              disabled
+              onclick="performCrop()"
+            >
+              ✅ Áp Dụng Cắt
+            </button>
+          </div>
+        </div>
+
+        <!-- Nhóm 4: Thêm Chữ và Nền -->
+        <div class="control-group">
+          <h2 class="text-xl font-semibold mb-3 text-indigo-600">
+            4. Thêm/Sửa Chú Thích Văn Bản
+          </h2>
+
+          <textarea
+            id="textInput"
+            rows="2"
+            class="w-full p-2 border border-gray-300 rounded-lg text-sm"
+            placeholder="Nhập chữ cần thêm/sửa..."
+            oninput="syncInputsToActiveAnnotation()"
+          ></textarea>
+
+          <div class="grid grid-cols-2 gap-3">
+            <div class="flex flex-col">
+              <label for="fontSize" class="text-xs font-medium text-gray-700"
+                >Cỡ Chữ (px)</label
+              >
+              <input
+                type="number"
+                id="fontSize"
+                value="30"
+                min="10"
+                max="200"
+                class="p-2 border border-gray-300 rounded-lg text-sm"
+                oninput="syncInputsToActiveAnnotation()"
+              />
+            </div>
+            <div class="flex flex-col">
+              <label
+                for="textPositionX"
+                class="text-xs font-medium text-gray-700"
+                >Vị trí X</label
+              >
+              <input
+                type="number"
+                id="textPositionX"
+                value="50"
+                class="p-2 border border-gray-300 rounded-lg text-sm"
+                oninput="syncInputsToActiveAnnotation()"
+              />
+            </div>
+            <div class="flex flex-col">
+              <label for="textColor" class="text-xs font-medium text-gray-700"
+                >Màu Chữ</label
               >
               <input
                 type="color"
-                id="textBgColor"
-                value="#000000"
+                id="textColor"
+                value="#FFFFFF"
                 class="h-8 p-0 border border-gray-300 rounded-lg cursor-pointer"
                 oninput="syncInputsToActiveAnnotation()"
               />
             </div>
-
-            <button
-              id="addTextBtn"
-              class="btn-primary w-full"
-              onclick="addTextAnnotation()"
-            >
-              ➕ Thêm Chú Thích Mới
-            </button>
-
-            <div
-              id="annotation-info"
-              class="p-3 bg-gray-100 rounded-lg mt-3 text-sm hidden"
-            >
-              <p class="font-semibold text-gray-700 mb-2">
-                Đang chọn lớp:
-                <span id="activeTextId" class="font-mono text-indigo-600"
-                  >Không</span
-                >
-              </p>
-              <button
-                id="deleteTextBtn"
-                class="btn-secondary text-red-600 border border-red-300 w-full"
-                onclick="deleteActiveAnnotation()"
+            <div class="flex flex-col">
+              <label
+                for="textPositionY"
+                class="text-xs font-medium text-gray-700"
+                >Vị trí Y</label
               >
-                🗑️ Xóa Lớp Chữ Đang Chọn
-              </button>
+              <input
+                type="number"
+                id="textPositionY"
+                value="50"
+                class="p-2 border border-gray-300 rounded-lg text-sm"
+                oninput="syncInputsToActiveAnnotation()"
+              />
             </div>
-
-            <p class="text-xs text-gray-500 pt-2 border-t mt-3">
-              💡 **Click vào chữ** để chọn và chỉnh sửa.
-            </p>
           </div>
-        </div>
+          <div class="flex flex-col">
+            <label for="textBgColor" class="text-xs font-medium text-gray-700"
+              >Màu Nền Chữ (Mặc định trong suốt nếu không phải màu đen)</label
+            >
+            <input
+              type="color"
+              id="textBgColor"
+              value="#000000"
+              class="h-8 p-0 border border-gray-300 rounded-lg cursor-pointer"
+              oninput="syncInputsToActiveAnnotation()"
+            />
+          </div>
 
-        <!-- Cột 2: Preview Ảnh -->
-        <div class="lg:col-span-2">
-          <!-- CROP NUMERICAL INPUTS -->
-          <div
-            id="cropInfoInputs"
-            class="grid grid-cols-4 gap-2 text-sm font-medium text-gray-700 mb-2 invisible"
+          <button
+            id="addTextBtn"
+            class="btn-primary w-full"
+            onclick="addTextAnnotation()"
           >
-            <div>
-              <label for="cropX" class="text-xs block">X:</label>
-              <input
-                type="number"
-                id="cropX"
-                min="0"
-                value="0"
-                class="w-full p-1 border border-gray-300 rounded-lg text-sm"
-                oninput="updateCropRectFromInputs()"
-              />
-            </div>
-            <div>
-              <label for="cropY" class="text-xs block">Y:</label>
-              <input
-                type="number"
-                id="cropY"
-                min="0"
-                value="0"
-                class="w-full p-1 border border-gray-300 rounded-lg text-sm"
-                oninput="updateCropRectFromInputs()"
-              />
-            </div>
-            <div>
-              <label for="cropW" class="text-xs block">Rộng:</label>
-              <input
-                type="number"
-                id="cropW"
-                min="0"
-                value="0"
-                class="w-full p-1 border border-gray-300 rounded-lg text-sm"
-                oninput="updateCropRectFromInputs()"
-              />
-            </div>
-            <div>
-              <label for="cropH" class="text-xs block">Cao:</label>
-              <input
-                type="number"
-                id="cropH"
-                min="0"
-                value="0"
-                class="w-full p-1 border border-gray-300 rounded-lg text-sm"
-                oninput="updateCropRectFromInputs()"
-              />
-            </div>
-          </div>
+            ➕ Thêm Chú Thích Mới
+          </button>
 
-          <div id="previewContainer" class="w-full">
-            <p
-              id="placeholderText"
-              class="text-gray-500 text-lg p-10 text-center"
-            >
-              Vui lòng tải ảnh lên để bắt đầu chỉnh sửa.<br />
-              (Ảnh sẽ được hiển thị và chỉnh sửa tại đây)
+          <div
+            id="annotation-info"
+            class="p-3 bg-gray-100 rounded-lg mt-3 text-sm hidden"
+          >
+            <p class="font-semibold text-gray-700 mb-2">
+              Đang chọn lớp:
+              <span id="activeTextId" class="font-mono text-indigo-600"
+                >Không</span
+              >
             </p>
-            <canvas id="imageCanvas"></canvas>
-          </div>
-        </div>
-      </div>
-
-      <!-- Section: AI Image Generation -->
-      <div
-        class="mt-12 p-6 bg-white rounded-xl shadow-2xl border border-indigo-100"
-      >
-        <h2 class="text-2xl font-bold text-indigo-600 mb-4 flex items-center">
-          ✨ Tính Năng Thông Minh: Chỉnh Sửa Ảnh bằng AI
-        </h2>
-        <p class="text-gray-600 mb-4">
-          Mô hình AI (<span class="font-semibold text-indigo-500"
-            >gemini-2.5-flash-image-preview</span
-          >) sẽ sử dụng ảnh hiện tại trên canvas làm đầu vào và biến đổi theo mô
-          tả của bạn.
-        </p>
-
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <!-- Input for AI Prompt -->
-          <div class="md:col-span-2 space-y-4">
-            <textarea
-              id="aiPrompt"
-              rows="3"
-              class="w-full p-3 border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500"
-              placeholder="Mô tả sự thay đổi bạn muốn (ví dụ: Thay thế con mèo bằng một con chó husky, làm cho bầu trời có màu tím, phong cách nghệ thuật pixel)"
-            ></textarea>
             <button
-              id="generateBtn"
-              class="btn-primary w-full"
-              onclick="generateAIImage()"
+              id="deleteTextBtn"
+              class="btn-secondary text-red-600 border border-red-300 w-full"
+              onclick="deleteActiveAnnotation()"
             >
-              Tạo/Chỉnh Sửa Ảnh Mới
+              🗑️ Xóa Lớp Chữ Đang Chọn
             </button>
           </div>
 
-          <!-- AI Result Display -->
-          <div class="md:col-span-1">
-            <div id="aiResult" class="ai-result">
-              <p class="text-gray-400 text-sm text-center p-4">
-                Ảnh AI sẽ xuất hiện tại đây
-              </p>
-            </div>
-          </div>
+          <p class="text-xs text-gray-500 pt-2 border-t mt-3">
+            💡 **Click vào chữ** để chọn và chỉnh sửa.
+          </p>
         </div>
       </div>
     </div>
 
-    <script>
-      const canvas = document.getElementById("imageCanvas");
-      const ctx = canvas.getContext("2d");
-      const placeholderText = document.getElementById("placeholderText");
-      const downloadBtn = document.getElementById("downloadBtn");
-      const downloadFormat = document.getElementById("downloadFormat");
-      const cropApplyBtn = document.getElementById("applyCropBtn");
-      const annotationInfoDiv = document.getElementById("annotation-info");
-      const activeTextIdSpan = document.getElementById("activeTextId");
+    <div id="main">
+      <span style="font-size: 30px; cursor: pointer" onclick="openNav()"
+        >&#9776; open</span
+      >
 
-      let initialImage = null;
-      let originalImage = null;
-      let rotationAngle = 0;
-      let flipH = 1;
+      <div class="max-w-6xl mx-auto">
+        <h1 class="text-3xl font-extrabold text-gray-900 mb-6 border-b pb-2">
+          🖼️ Trình Chỉnh Sửa Ảnh Thông Minh
+        </h1>
 
-      // Trạng thái Cắt (Crop)
-      let isCropping = false;
-      let cropStart = { x: 0, y: 0 };
-      let cropRect = null;
+        <!-- <div id="editor-section" class="grid grid-cols-1 lg:grid-cols-3 gap-8"> -->
+          <!-- Cột 1: Controls -->
+          <!-- <div class="lg:col-span-1 space-y-6"> -->
+            <!-- Nhóm 1: Tải Ảnh và Tải Xuống -->
+            <!-- <div class="control-group">
+              <h2 class="text-xl font-semibold mb-3 text-indigo-600">
+                1. Quản Lý Ảnh
+              </h2>
+              <label
+                for="imageUpload"
+                class="btn-primary block text-center cursor-pointer"
+              >
+                Chọn và Tải Ảnh Lên
+              </label>
+              <input
+                type="file"
+                id="imageUpload"
+                accept="image/*"
+                class="hidden"
+                onchange="handleImageUpload(event)"
+              />
 
-      // Trạng thái Kéo Chữ (Drag Text)
-      let isTextDragging = false;
-      let activeDragAnnotation = null; // Chú thích đang được kéo/chọn
-      let dragOffsetX = 0;
-      let dragOffsetY = 0;
+              <button
+                id="downloadBtn"
+                class="btn-secondary w-full opacity-50 cursor-not-allowed"
+                disabled
+                onclick="downloadImage()"
+              >
+                📥 Tải Ảnh Đã Chỉnh Sửa
+              </button>
+              <select
+                id="downloadFormat"
+                class="w-full p-2 border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500"
+              >
+                <option value="image/png">PNG</option>
+                <option value="image/jpeg">JPEG</option>
+                <option value="image/gif">GIF</option>
+                <option value="image/webp">WEBP</option>
+              </select>
+            </div> -->
 
-      // Mảng lưu trữ TẤT CẢ các chú thích văn bản
-      let annotations = [];
+            <!-- Nhóm 2: Điều Chỉnh Cơ Bản -->
+            <!-- <div class="control-group">
+              <h2 class="text-xl font-semibold mb-3 text-indigo-600">
+                2. Điều Chỉnh Cơ Bản
+              </h2>
 
-      const systemInstruction = {
-        parts: [
-          {
-            text: "Bạn là một chuyên gia chỉnh sửa ảnh AI. Nhiệm vụ của bạn là lấy ảnh đầu vào và áp dụng các thay đổi được mô tả trong prompt của người dùng. Hãy chú ý đặc biệt đến các chi tiết về góc nhìn (perspective), độ cao của máy ảnh (ví dụ: 150cm-200cm), vị trí trung tâm của đối tượng và các yếu tố bố cục (composition) khác để đảm bảo kết quả phù hợp với mô tả nhất có thể.",
-          },
-        ],
-      };
+              <div id="controls-list" class="space-y-4">
+                <div class="flex flex-col">
+                  <label
+                    for="brightness"
+                    class="font-medium text-gray-700 flex justify-between"
+                    >Độ Sáng:</label
+                  >
+                  <div class="flex items-center space-x-2">
+                    <input
+                      type="number"
+                      id="brightness"
+                      min="0"
+                      max="200"
+                      value="100"
+                      class="w-full p-2 border border-gray-300 rounded-lg text-sm"
+                      oninput="applyFilters()"
+                    />
+                    <span class="text-sm text-gray-500">%</span>
+                  </div>
+                </div>
+                <div class="flex flex-col">
+                  <label
+                    for="contrast"
+                    class="font-medium text-gray-700 flex justify-between"
+                    >Độ Tương Phản:</label
+                  >
+                  <div class="flex items-center space-x-2">
+                    <input
+                      type="number"
+                      id="contrast"
+                      min="0"
+                      max="200"
+                      value="100"
+                      class="w-full p-2 border border-gray-300 rounded-lg text-sm"
+                      oninput="applyFilters()"
+                    />
+                    <span class="text-sm text-gray-500">%</span>
+                  </div>
+                </div>
+                <div class="flex flex-col">
+                  <label
+                    for="blur"
+                    class="font-medium text-gray-700 flex justify-between"
+                    >Làm Mờ (Blur):</label
+                  >
+                  <div class="flex items-center space-x-2">
+                    <input
+                      type="number"
+                      id="blur"
+                      min="0"
+                      max="10"
+                      step="0.1"
+                      value="0"
+                      class="w-full p-2 border border-gray-300 rounded-lg text-sm"
+                      oninput="applyFilters()"
+                    />
+                    <span class="text-sm text-gray-500">px</span>
+                  </div>
+                </div>
+              </div>
+            </div> -->
 
-      // --- Hàm Tiện Ích ---
+            <!-- Nhóm 3: Biến Đổi & Cắt -->
+            <!-- <div class="control-group">
+              <h2 class="text-xl font-semibold mb-3 text-indigo-600">
+                3. Biến Đổi & Cắt
+              </h2>
+              <div class="grid grid-cols-2 gap-3">
+                <button class="btn-secondary" onclick="applyGrayscale()">
+                  ⚫ Chuyển Đen Trắng
+                </button>
+                <button class="btn-secondary" onclick="resetFilters()">
+                  🔄 Đặt Lại Hiệu Ứng
+                </button>
+                <button class="btn-secondary" onclick="rotateImage(90)">
+                  ↩️ Xoay (90°)
+                </button>
+                <button class="btn-secondary" onclick="flipImage('horizontal')">
+                  ↔️ Lật Ngang
+                </button>
 
-      /**
-       * Chuyển tọa độ chuột (relative to viewport) sang tọa độ Canvas (internal pixel)
-       */
-      function getCanvasCoords(clientX, clientY) {
-        const rect = canvas.getBoundingClientRect();
-        const scaleX = canvas.width / rect.width;
-        const scaleY = canvas.height / rect.height;
+                <button
+                  id="cropModeBtn"
+                  class="btn-secondary col-span-2"
+                  onclick="toggleCropMode()"
+                >
+                  ✂️ Chế Độ Cắt
+                </button>
+                <button
+                  id="applyCropBtn"
+                  class="btn-primary col-span-2 opacity-50 cursor-not-allowed"
+                  disabled
+                  onclick="performCrop()"
+                >
+                  ✅ Áp Dụng Cắt
+                </button>
+              </div>
+            </div> -->
 
-        const x = (clientX - rect.left) * scaleX;
-        const y = (clientY - rect.top) * scaleY;
-        return { x, y };
-      }
+            <!-- Nhóm 4: Thêm Chữ và Nền -->
+            <!-- <div class="control-group">
+              <h2 class="text-xl font-semibold mb-3 text-indigo-600">
+                4. Thêm/Sửa Chú Thích Văn Bản
+              </h2>
 
-      // --- Xử Lý Ảnh Cơ Bản và Bộ Lọc (Giữ nguyên) ---
+              <textarea
+                id="textInput"
+                rows="2"
+                class="w-full p-2 border border-gray-300 rounded-lg text-sm"
+                placeholder="Nhập chữ cần thêm/sửa..."
+                oninput="syncInputsToActiveAnnotation()"
+              ></textarea>
 
-      function handleImageUpload(event) {
-        const file = event.target.files[0];
-        if (!file) return;
+              <div class="grid grid-cols-2 gap-3">
+                <div class="flex flex-col">
+                  <label
+                    for="fontSize"
+                    class="text-xs font-medium text-gray-700"
+                    >Cỡ Chữ (px)</label
+                  >
+                  <input
+                    type="number"
+                    id="fontSize"
+                    value="30"
+                    min="10"
+                    max="200"
+                    class="p-2 border border-gray-300 rounded-lg text-sm"
+                    oninput="syncInputsToActiveAnnotation()"
+                  />
+                </div>
+                <div class="flex flex-col">
+                  <label
+                    for="textPositionX"
+                    class="text-xs font-medium text-gray-700"
+                    >Vị trí X</label
+                  >
+                  <input
+                    type="number"
+                    id="textPositionX"
+                    value="50"
+                    class="p-2 border border-gray-300 rounded-lg text-sm"
+                    oninput="syncInputsToActiveAnnotation()"
+                  />
+                </div>
+                <div class="flex flex-col">
+                  <label
+                    for="textColor"
+                    class="text-xs font-medium text-gray-700"
+                    >Màu Chữ</label
+                  >
+                  <input
+                    type="color"
+                    id="textColor"
+                    value="#FFFFFF"
+                    class="h-8 p-0 border border-gray-300 rounded-lg cursor-pointer"
+                    oninput="syncInputsToActiveAnnotation()"
+                  />
+                </div>
+                <div class="flex flex-col">
+                  <label
+                    for="textPositionY"
+                    class="text-xs font-medium text-gray-700"
+                    >Vị trí Y</label
+                  >
+                  <input
+                    type="number"
+                    id="textPositionY"
+                    value="50"
+                    class="p-2 border border-gray-300 rounded-lg text-sm"
+                    oninput="syncInputsToActiveAnnotation()"
+                  />
+                </div>
+              </div>
+              <div class="flex flex-col">
+                <label
+                  for="textBgColor"
+                  class="text-xs font-medium text-gray-700"
+                  >Màu Nền Chữ (Mặc định trong suốt nếu không phải màu
+                  đen)</label
+                >
+                <input
+                  type="color"
+                  id="textBgColor"
+                  value="#000000"
+                  class="h-8 p-0 border border-gray-300 rounded-lg cursor-pointer"
+                  oninput="syncInputsToActiveAnnotation()"
+                />
+              </div>
 
-        const reader = new FileReader();
-        reader.onload = function (e) {
-          const img = new Image();
-          img.onload = function () {
-            initialImage = img;
-            originalImage = img;
-            rotationAngle = 0;
-            flipH = 1;
-            cropRect = null;
-            isCropping = false;
-            annotations = []; // Reset all annotations
+              <button
+                id="addTextBtn"
+                class="btn-primary w-full"
+                onclick="addTextAnnotation()"
+              >
+                ➕ Thêm Chú Thích Mới
+              </button>
 
-            activeDragAnnotation = null;
-            syncActiveAnnotationToInputs(null); // Reset annotation controls UI
+              <div
+                id="annotation-info"
+                class="p-3 bg-gray-100 rounded-lg mt-3 text-sm hidden"
+              >
+                <p class="font-semibold text-gray-700 mb-2">
+                  Đang chọn lớp:
+                  <span id="activeTextId" class="font-mono text-indigo-600"
+                    >Không</span
+                  >
+                </p>
+                <button
+                  id="deleteTextBtn"
+                  class="btn-secondary text-red-600 border border-red-300 w-full"
+                  onclick="deleteActiveAnnotation()"
+                >
+                  🗑️ Xóa Lớp Chữ Đang Chọn
+                </button>
+              </div>
 
-            document.getElementById("brightness").value = 100;
-            document.getElementById("contrast").value = 100;
-            document.getElementById("blur").value = 0;
-            canvas.style.filter = "";
+              <p class="text-xs text-gray-500 pt-2 border-t mt-3">
+                💡 **Click vào chữ** để chọn và chỉnh sửa.
+              </p>
+            </div>
+          </div> -->
 
-            downloadBtn.disabled = false;
-            downloadBtn.classList.remove("opacity-50", "cursor-not-allowed");
-            placeholderText.style.display = "none";
-            canvas.style.display = "block";
+          <!-- Cột 2: Preview Ảnh -->
+          <div class="lg:col-span-2">
+            <!-- CROP NUMERICAL INPUTS -->
+            <div
+              id="cropInfoInputs"
+              class="grid grid-cols-4 gap-2 text-sm font-medium text-gray-700 mb-2 invisible"
+            >
+              <div>
+                <label for="cropX" class="text-xs block">X:</label>
+                <input
+                  type="number"
+                  id="cropX"
+                  min="0"
+                  value="0"
+                  class="w-full p-1 border border-gray-300 rounded-lg text-sm"
+                  oninput="updateCropRectFromInputs()"
+                />
+              </div>
+              <div>
+                <label for="cropY" class="text-xs block">Y:</label>
+                <input
+                  type="number"
+                  id="cropY"
+                  min="0"
+                  value="0"
+                  class="w-full p-1 border border-gray-300 rounded-lg text-sm"
+                  oninput="updateCropRectFromInputs()"
+                />
+              </div>
+              <div>
+                <label for="cropW" class="text-xs block">Rộng:</label>
+                <input
+                  type="number"
+                  id="cropW"
+                  min="0"
+                  value="0"
+                  class="w-full p-1 border border-gray-300 rounded-lg text-sm"
+                  oninput="updateCropRectFromInputs()"
+                />
+              </div>
+              <div>
+                <label for="cropH" class="text-xs block">Cao:</label>
+                <input
+                  type="number"
+                  id="cropH"
+                  min="0"
+                  value="0"
+                  class="w-full p-1 border border-gray-300 rounded-lg text-sm"
+                  oninput="updateCropRectFromInputs()"
+                />
+              </div>
+            </div>
 
-            drawCanvas(originalImage);
-            applyFilters();
+            <div id="previewContainer" class="w-full">
+              <p
+                id="placeholderText"
+                class="text-gray-500 text-lg p-10 text-center"
+              >
+                Vui lòng tải ảnh lên để bắt đầu chỉnh sửa.<br />
+                (Ảnh sẽ được hiển thị và chỉnh sửa tại đây)
+              </p>
+              <canvas id="imageCanvas"></canvas>
+            </div>
+          </div>
+        </div>
+
+        <!-- Section: AI Image Generation -->
+        <div
+          class="mt-12 p-6 bg-white rounded-xl shadow-2xl border border-indigo-100"
+        >
+          <h2 class="text-2xl font-bold text-indigo-600 mb-4 flex items-center">
+            ✨ Tính Năng Thông Minh: Chỉnh Sửa Ảnh bằng AI
+          </h2>
+          <p class="text-gray-600 mb-4">
+            Mô hình AI (<span class="font-semibold text-indigo-500"
+              >gemini-2.5-flash-image-preview</span
+            >) sẽ sử dụng ảnh hiện tại trên canvas làm đầu vào và biến đổi theo
+            mô tả của bạn.
+          </p>
+
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <!-- Input for AI Prompt -->
+            <div class="md:col-span-2 space-y-4">
+              <textarea
+                id="aiPrompt"
+                rows="3"
+                class="w-full p-3 border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500"
+                placeholder="Mô tả sự thay đổi bạn muốn (ví dụ: Thay thế con mèo bằng một con chó husky, làm cho bầu trời có màu tím, phong cách nghệ thuật pixel)"
+              ></textarea>
+              <button
+                id="generateBtn"
+                class="btn-primary w-full"
+                onclick="generateAIImage()"
+              >
+                Tạo/Chỉnh Sửa Ảnh Mới
+              </button>
+            </div>
+
+            <!-- AI Result Display -->
+            <div class="md:col-span-1">
+              <div id="aiResult" class="ai-result">
+                <p class="text-gray-400 text-sm text-center p-4">
+                  Ảnh AI sẽ xuất hiện tại đây
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <script>
+        const canvas = document.getElementById("imageCanvas");
+        const ctx = canvas.getContext("2d");
+        const placeholderText = document.getElementById("placeholderText");
+        const downloadBtn = document.getElementById("downloadBtn");
+        const downloadFormat = document.getElementById("downloadFormat");
+        const cropApplyBtn = document.getElementById("applyCropBtn");
+        const annotationInfoDiv = document.getElementById("annotation-info");
+        const activeTextIdSpan = document.getElementById("activeTextId");
+
+        let initialImage = null;
+        let originalImage = null;
+        let rotationAngle = 0;
+        let flipH = 1;
+
+        // Trạng thái Cắt (Crop)
+        let isCropping = false;
+        let cropStart = { x: 0, y: 0 };
+        let cropRect = null;
+
+        // Trạng thái Kéo Chữ (Drag Text)
+        let isTextDragging = false;
+        let activeDragAnnotation = null; // Chú thích đang được kéo/chọn
+        let dragOffsetX = 0;
+        let dragOffsetY = 0;
+
+        // Mảng lưu trữ TẤT CẢ các chú thích văn bản
+        let annotations = [];
+
+        // Constants for API calls
+        // const apiKey = "";
+        // const model = "gemini-2.5-flash-image-preview";
+
+        const systemInstruction = {
+          parts: [
+            {
+              text: "Bạn là một chuyên gia chỉnh sửa ảnh AI. Nhiệm vụ của bạn là lấy ảnh đầu vào và áp dụng các thay đổi được mô tả trong prompt của người dùng. Hãy chú ý đặc biệt đến các chi tiết về góc nhìn (perspective), độ cao của máy ảnh (ví dụ: 150cm-200cm), vị trí trung tâm của đối tượng và các yếu tố bố cục (composition) khác để đảm bảo kết quả phù hợp với mô tả nhất có thể.",
+            },
+          ],
+        };
+
+        // --- Hàm Tiện Ích ---
+
+        /**
+         * Chuyển tọa độ chuột (relative to viewport) sang tọa độ Canvas (internal pixel)
+         */
+        function getCanvasCoords(clientX, clientY) {
+          const rect = canvas.getBoundingClientRect();
+          const scaleX = canvas.width / rect.width;
+          const scaleY = canvas.height / rect.height;
+
+          const x = (clientX - rect.left) * scaleX;
+          const y = (clientY - rect.top) * scaleY;
+          return { x, y };
+        }
+
+        // --- Xử Lý Ảnh Cơ Bản và Bộ Lọc (Giữ nguyên) ---
+
+        function handleImageUpload(event) {
+          const file = event.target.files[0];
+          if (!file) return;
+
+          const reader = new FileReader();
+          reader.onload = function (e) {
+            const img = new Image();
+            img.onload = function () {
+              initialImage = img;
+              originalImage = img;
+              rotationAngle = 0;
+              flipH = 1;
+              cropRect = null;
+              isCropping = false;
+              annotations = []; // Reset all annotations
+
+              activeDragAnnotation = null;
+              syncActiveAnnotationToInputs(null); // Reset annotation controls UI
+
+              document.getElementById("brightness").value = 100;
+              document.getElementById("contrast").value = 100;
+              document.getElementById("blur").value = 0;
+              canvas.style.filter = "";
+
+              downloadBtn.disabled = false;
+              downloadBtn.classList.remove("opacity-50", "cursor-not-allowed");
+              placeholderText.style.display = "none";
+              canvas.style.display = "block";
+
+              drawCanvas(originalImage);
+              applyFilters();
+            };
+            img.src = e.target.result;
           };
-          img.src = e.target.result;
-        };
-        reader.readAsDataURL(file);
-      }
-
-      function applyFilters() {
-        if (!originalImage) return;
-        const brightness = document.getElementById("brightness").value;
-        const contrast = document.getElementById("contrast").value;
-        const blur = document.getElementById("blur").value;
-        const isGrayscale = canvas.style.filter.includes("grayscale(1)");
-
-        let filterString = `brightness(${brightness}%) contrast(${contrast}%) blur(${blur}px)`;
-        if (isGrayscale) {
-          filterString += ` grayscale(1)`;
+          reader.readAsDataURL(file);
         }
 
-        canvas.style.filter = filterString.trim();
-        drawCanvas(originalImage);
-      }
+        function applyFilters() {
+          if (!originalImage) return;
+          const brightness = document.getElementById("brightness").value;
+          const contrast = document.getElementById("contrast").value;
+          const blur = document.getElementById("blur").value;
+          const isGrayscale = canvas.style.filter.includes("grayscale(1)");
 
-      function resetFilters() {
-        if (!initialImage) return;
+          let filterString = `brightness(${brightness}%) contrast(${contrast}%) blur(${blur}px)`;
+          if (isGrayscale) {
+            filterString += ` grayscale(1)`;
+          }
 
-        document.getElementById("brightness").value = 100;
-        document.getElementById("contrast").value = 100;
-        document.getElementById("blur").value = 0;
-
-        rotationAngle = 0;
-        flipH = 1;
-
-        originalImage = initialImage;
-
-        cropRect = null;
-        if (isCropping) toggleCropMode();
-
-        activeDragAnnotation = null;
-        syncActiveAnnotationToInputs(null); // Reset annotation controls UI
-
-        canvas.style.filter = "";
-
-        applyFilters();
-        drawCanvas(originalImage);
-      }
-
-      function applyGrayscale() {
-        if (!originalImage) return;
-        const currentFilter = canvas.style.filter;
-        if (currentFilter.includes("grayscale(1)")) {
-          canvas.style.filter = currentFilter
-            .replace("grayscale(1)", "")
-            .trim();
-        } else {
-          canvas.style.filter += " grayscale(1)";
-        }
-        applyFilters();
-      }
-
-      function rotateImage(angle) {
-        if (!originalImage) return;
-        rotationAngle = (rotationAngle + angle) % 360;
-        drawCanvas(originalImage);
-      }
-
-      function flipImage(axis) {
-        if (!originalImage) return;
-        if (axis === "horizontal") {
-          flipH *= -1;
-        }
-        drawCanvas(originalImage);
-      }
-
-      // --- Vẽ Canvas chính ---
-      function drawCanvas(img) {
-        if (!img) return;
-
-        const isRotated = rotationAngle % 180 !== 0;
-        const newWidth = isRotated ? img.height : img.width;
-        const newHeight = isRotated ? img.width : img.height;
-
-        canvas.width = newWidth;
-        canvas.height = newHeight;
-
-        ctx.clearRect(0, 0, newWidth, newHeight);
-        ctx.save();
-        ctx.translate(newWidth / 2, newHeight / 2);
-        ctx.rotate((rotationAngle * Math.PI) / 180);
-        ctx.scale(flipH, 1);
-
-        let drawX = -img.width / 2;
-        let drawY = -img.height / 2;
-        let drawW = img.width;
-        let drawH = img.height;
-
-        ctx.drawImage(img, drawX, drawY, drawW, drawH);
-        ctx.restore();
-
-        // --- DRAW CROP OVERLAY (Vẽ lớp phủ khi cắt) ---
-        if (isCropping && cropRect) {
-          ctx.save();
-          ctx.setTransform(1, 0, 0, 1, 0, 0);
-          ctx.fillStyle = "rgba(0, 0, 0, 0.5)";
-          ctx.fillRect(0, 0, canvas.width, cropRect.y);
-          ctx.fillRect(
-            0,
-            cropRect.y + cropRect.h,
-            canvas.width,
-            canvas.height - (cropRect.y + cropRect.h)
-          );
-          ctx.fillRect(0, cropRect.y, cropRect.x, cropRect.h);
-          ctx.fillRect(
-            cropRect.x + cropRect.w,
-            cropRect.y,
-            canvas.width - (cropRect.x + cropRect.w),
-            cropRect.h
-          );
-          ctx.strokeStyle = "#FFFFFF";
-          ctx.lineWidth = 2;
-          ctx.setLineDash([5, 5]);
-          ctx.strokeRect(cropRect.x, cropRect.y, cropRect.w, cropRect.h);
-          ctx.setLineDash([]);
-          ctx.restore();
-        }
-
-        // --- DRAW ANNOTATIONS (Vẽ tất cả chú thích văn bản) ---
-        if (!isCropping && annotations.length > 0) {
-          ctx.save();
-          ctx.setTransform(1, 0, 0, 1, 0, 0);
-
-          annotations.forEach((ann) => {
-            ctx.font = `${ann.size}px Inter, sans-serif`;
-            ctx.fillStyle = ann.color;
-            ctx.textBaseline = "top";
-
-            const lines = ann.text.split("\n");
-            let maxWidth = 0;
-            lines.forEach((line) => {
-              const metrics = ctx.measureText(line);
-              if (metrics.width > maxWidth) maxWidth = metrics.width;
-            });
-
-            const padding = 10;
-            const lineHeight = ann.size * 1.2;
-            const totalHeight = lines.length * lineHeight;
-            const totalWidth = maxWidth;
-
-            // Vẽ nền chữ
-            ctx.fillStyle = ann.bgColor;
-            const boxX = ann.x - padding;
-            const boxY = ann.y - padding;
-            const boxW = totalWidth + padding * 2;
-            const boxH = totalHeight + padding * 2;
-
-            ctx.fillRect(boxX, boxY, boxW, boxH);
-
-            // Vẽ khung khi đang kéo/chọn
-            if (activeDragAnnotation && activeDragAnnotation.id === ann.id) {
-              ctx.strokeStyle = "#FFC107"; // Màu vàng
-              ctx.lineWidth = 3;
-              ctx.setLineDash([5, 5]);
-              ctx.strokeRect(boxX, boxY, boxW, boxH);
-              ctx.setLineDash([]);
-            }
-
-            // Vẽ chữ
-            ctx.fillStyle = ann.color;
-            lines.forEach((line, index) => {
-              ctx.fillText(line, ann.x, ann.y + index * lineHeight);
-            });
-          });
-
-          ctx.restore();
-        }
-
-        canvas.style.maxWidth = "100%";
-        canvas.style.maxHeight = "100%";
-      }
-
-      // --- Chức năng Chữ (Annotation) MỚI ---
-
-      /**
-       * Đồng bộ hóa thuộc tính của annotation đang chọn vào các ô input.
-       * @param {Object} annotation - Annotation object to sync from, or null to reset inputs.
-       */
-      function syncActiveAnnotationToInputs(annotation) {
-        const defaultText = document.getElementById("textInput").value; // Keep current text as default for new annotation
-
-        if (annotation) {
-          document.getElementById("textInput").value = annotation.text;
-          document.getElementById("fontSize").value = annotation.size;
-          document.getElementById("textColor").value = annotation.color;
-          document.getElementById("textBgColor").value = annotation.bgColor;
-          document.getElementById("textPositionX").value = Math.round(
-            annotation.x
-          );
-          document.getElementById("textPositionY").value = Math.round(
-            annotation.y
-          );
-          activeTextIdSpan.textContent = annotation.id.substring(0, 8) + "...";
-          annotationInfoDiv.classList.remove("hidden");
-        } else {
-          // Khi không có annotation nào được chọn, chỉ reset UI feedback
-          // Giữ lại các giá trị input để dùng cho annotation mới
-          activeTextIdSpan.textContent = "Không";
-          annotationInfoDiv.classList.add("hidden");
-        }
-      }
-
-      /**
-       * Đồng bộ hóa các ô input vào thuộc tính của annotation đang chọn (real-time editing).
-       */
-      function syncInputsToActiveAnnotation() {
-        if (!activeDragAnnotation) {
-          // Không làm gì nếu không có lớp chữ nào được chọn
-          return;
-        }
-
-        activeDragAnnotation.text = document.getElementById("textInput").value;
-        activeDragAnnotation.size =
-          parseInt(document.getElementById("fontSize").value) || 30;
-        activeDragAnnotation.color = document.getElementById("textColor").value;
-        activeDragAnnotation.bgColor =
-          document.getElementById("textBgColor").value;
-        activeDragAnnotation.x =
-          parseInt(document.getElementById("textPositionX").value) || 0;
-        activeDragAnnotation.y =
-          parseInt(document.getElementById("textPositionY").value) || 0;
-
-        drawCanvas(originalImage);
-      }
-
-      /**
-       * Thêm một chú thích văn bản mới vào mảng.
-       */
-      function addTextAnnotation() {
-        if (!originalImage) return;
-
-        const text = document.getElementById("textInput").value.trim();
-        if (!text) return;
-
-        const size = parseInt(document.getElementById("fontSize").value) || 30;
-        const color = document.getElementById("textColor").value;
-        const bgColor = document.getElementById("textBgColor").value;
-        const x =
-          parseInt(document.getElementById("textPositionX").value) || 50;
-        const y =
-          parseInt(document.getElementById("textPositionY").value) || 50;
-
-        const newId =
-          Date.now().toString(36) + Math.random().toString(36).substring(2);
-
-        const newAnnotation = {
-          id: newId,
-          text: text,
-          size: size,
-          color: color,
-          bgColor: bgColor,
-          x: x,
-          y: y,
-        };
-
-        annotations.push(newAnnotation);
-
-        // Xóa input text sau khi thêm để chuẩn bị cho annotation tiếp theo
-        document.getElementById("textInput").value = "";
-
-        // Hủy chọn lớp chữ hiện tại
-        activeDragAnnotation = null;
-        syncActiveAnnotationToInputs(null);
-
-        drawCanvas(originalImage);
-      }
-
-      /**
-       * Xóa chú thích đang được kéo/chọn.
-       */
-      function deleteActiveAnnotation() {
-        if (!activeDragAnnotation) return;
-
-        const index = annotations.findIndex(
-          (ann) => ann.id === activeDragAnnotation.id
-        );
-        if (index > -1) {
-          annotations.splice(index, 1);
-        }
-
-        activeDragAnnotation = null;
-        syncActiveAnnotationToInputs(null); // Reset annotation controls UI
-        drawCanvas(originalImage);
-      }
-
-      /**
-       * Kiểm tra xem một điểm (tọa độ canvas) có nằm trong vùng annotation không.
-       */
-      function isPointInAnnotation(pointX, pointY, ann) {
-        const tempCtx = canvas.getContext("2d");
-        tempCtx.font = `${ann.size}px Inter, sans-serif`;
-        const lines = ann.text.split("\n");
-        let maxWidth = 0;
-        lines.forEach((line) => {
-          const metrics = tempCtx.measureText(line);
-          if (metrics.width > maxWidth) maxWidth = metrics.width;
-        });
-
-        const padding = 10;
-        const lineHeight = ann.size * 1.2;
-        const totalHeight = lines.length * lineHeight;
-        const totalWidth = maxWidth;
-
-        // Bounding Box Coordinates (bao gồm cả padding của background)
-        const boxX = ann.x - padding;
-        const boxY = ann.y - padding;
-        const boxW = totalWidth + padding * 2;
-        const boxH = totalHeight + padding * 2;
-
-        return (
-          pointX >= boxX &&
-          pointX <= boxX + boxW &&
-          pointY >= boxY &&
-          pointY <= boxY + boxH
-        );
-      }
-
-      // --- Event Listeners for Dragging and Selection ---
-
-      // MOUSE DOWN: Bắt đầu kéo chữ hoặc bắt đầu cắt
-      canvas.addEventListener("mousedown", (e) => {
-        if (!originalImage) return;
-
-        const { x: scaledX, y: scaledY } = getCanvasCoords(
-          e.clientX,
-          e.clientY
-        );
-
-        // 1. Logic Cropping
-        if (isCropping) {
-          cropStart.x = scaledX;
-          cropStart.y = scaledY;
-          cropRect = null;
-          cropApplyBtn.disabled = true;
-          cropApplyBtn.classList.add("opacity-50", "cursor-not-allowed");
-          syncCropInputsToRect();
+          canvas.style.filter = filterString.trim();
           drawCanvas(originalImage);
-          return;
         }
 
-        // 2. Logic Text Dragging / Selection
-        let clickedAnnotation = null;
-        for (let i = annotations.length - 1; i >= 0; i--) {
-          const ann = annotations[i];
-          if (isPointInAnnotation(scaledX, scaledY, ann)) {
-            clickedAnnotation = ann;
-            break;
+        function resetFilters() {
+          if (!initialImage) return;
+
+          document.getElementById("brightness").value = 100;
+          document.getElementById("contrast").value = 100;
+          document.getElementById("blur").value = 0;
+
+          rotationAngle = 0;
+          flipH = 1;
+
+          originalImage = initialImage;
+
+          cropRect = null;
+          if (isCropping) toggleCropMode();
+
+          activeDragAnnotation = null;
+          syncActiveAnnotationToInputs(null); // Reset annotation controls UI
+
+          canvas.style.filter = "";
+
+          applyFilters();
+          drawCanvas(originalImage);
+        }
+
+        function applyGrayscale() {
+          if (!originalImage) return;
+          const currentFilter = canvas.style.filter;
+          if (currentFilter.includes("grayscale(1)")) {
+            canvas.style.filter = currentFilter
+              .replace("grayscale(1)", "")
+              .trim();
+          } else {
+            canvas.style.filter += " grayscale(1)";
+          }
+          applyFilters();
+        }
+
+        function rotateImage(angle) {
+          if (!originalImage) return;
+          rotationAngle = (rotationAngle + angle) % 360;
+          drawCanvas(originalImage);
+        }
+
+        function flipImage(axis) {
+          if (!originalImage) return;
+          if (axis === "horizontal") {
+            flipH *= -1;
+          }
+          drawCanvas(originalImage);
+        }
+
+        // --- Vẽ Canvas chính ---
+        function drawCanvas(img) {
+          if (!img) return;
+
+          const isRotated = rotationAngle % 180 !== 0;
+          const newWidth = isRotated ? img.height : img.width;
+          const newHeight = isRotated ? img.width : img.height;
+
+          canvas.width = newWidth;
+          canvas.height = newHeight;
+
+          ctx.clearRect(0, 0, newWidth, newHeight);
+          ctx.save();
+          ctx.translate(newWidth / 2, newHeight / 2);
+          ctx.rotate((rotationAngle * Math.PI) / 180);
+          ctx.scale(flipH, 1);
+
+          let drawX = -img.width / 2;
+          let drawY = -img.height / 2;
+          let drawW = img.width;
+          let drawH = img.height;
+
+          ctx.drawImage(img, drawX, drawY, drawW, drawH);
+          ctx.restore();
+
+          // --- DRAW CROP OVERLAY (Vẽ lớp phủ khi cắt) ---
+          if (isCropping && cropRect) {
+            ctx.save();
+            ctx.setTransform(1, 0, 0, 1, 0, 0);
+            ctx.fillStyle = "rgba(0, 0, 0, 0.5)";
+            ctx.fillRect(0, 0, canvas.width, cropRect.y);
+            ctx.fillRect(
+              0,
+              cropRect.y + cropRect.h,
+              canvas.width,
+              canvas.height - (cropRect.y + cropRect.h)
+            );
+            ctx.fillRect(0, cropRect.y, cropRect.x, cropRect.h);
+            ctx.fillRect(
+              cropRect.x + cropRect.w,
+              cropRect.y,
+              canvas.width - (cropRect.x + cropRect.w),
+              cropRect.h
+            );
+            ctx.strokeStyle = "#FFFFFF";
+            ctx.lineWidth = 2;
+            ctx.setLineDash([5, 5]);
+            ctx.strokeRect(cropRect.x, cropRect.y, cropRect.w, cropRect.h);
+            ctx.setLineDash([]);
+            ctx.restore();
+          }
+
+          // --- DRAW ANNOTATIONS (Vẽ tất cả chú thích văn bản) ---
+          if (!isCropping && annotations.length > 0) {
+            ctx.save();
+            ctx.setTransform(1, 0, 0, 1, 0, 0);
+
+            annotations.forEach((ann) => {
+              ctx.font = `${ann.size}px Inter, sans-serif`;
+              ctx.fillStyle = ann.color;
+              ctx.textBaseline = "top";
+
+              const lines = ann.text.split("\n");
+              let maxWidth = 0;
+              lines.forEach((line) => {
+                const metrics = ctx.measureText(line);
+                if (metrics.width > maxWidth) maxWidth = metrics.width;
+              });
+
+              const padding = 10;
+              const lineHeight = ann.size * 1.2;
+              const totalHeight = lines.length * lineHeight;
+              const totalWidth = maxWidth;
+
+              // Vẽ nền chữ
+              ctx.fillStyle = ann.bgColor;
+              const boxX = ann.x - padding;
+              const boxY = ann.y - padding;
+              const boxW = totalWidth + padding * 2;
+              const boxH = totalHeight + padding * 2;
+
+              ctx.fillRect(boxX, boxY, boxW, boxH);
+
+              // Vẽ khung khi đang kéo/chọn
+              if (activeDragAnnotation && activeDragAnnotation.id === ann.id) {
+                ctx.strokeStyle = "#FFC107"; // Màu vàng
+                ctx.lineWidth = 3;
+                ctx.setLineDash([5, 5]);
+                ctx.strokeRect(boxX, boxY, boxW, boxH);
+                ctx.setLineDash([]);
+              }
+
+              // Vẽ chữ
+              ctx.fillStyle = ann.color;
+              lines.forEach((line, index) => {
+                ctx.fillText(line, ann.x, ann.y + index * lineHeight);
+              });
+            });
+
+            ctx.restore();
+          }
+
+          canvas.style.maxWidth = "100%";
+          canvas.style.maxHeight = "100%";
+        }
+
+        // --- Chức năng Chữ (Annotation) MỚI ---
+
+        /**
+         * Đồng bộ hóa thuộc tính của annotation đang chọn vào các ô input.
+         * @param {Object} annotation - Annotation object to sync from, or null to reset inputs.
+         */
+        function syncActiveAnnotationToInputs(annotation) {
+          const defaultText = document.getElementById("textInput").value; // Keep current text as default for new annotation
+
+          if (annotation) {
+            document.getElementById("textInput").value = annotation.text;
+            document.getElementById("fontSize").value = annotation.size;
+            document.getElementById("textColor").value = annotation.color;
+            document.getElementById("textBgColor").value = annotation.bgColor;
+            document.getElementById("textPositionX").value = Math.round(
+              annotation.x
+            );
+            document.getElementById("textPositionY").value = Math.round(
+              annotation.y
+            );
+            activeTextIdSpan.textContent =
+              annotation.id.substring(0, 8) + "...";
+            annotationInfoDiv.classList.remove("hidden");
+          } else {
+            // Khi không có annotation nào được chọn, chỉ reset UI feedback
+            // Giữ lại các giá trị input để dùng cho annotation mới
+            activeTextIdSpan.textContent = "Không";
+            annotationInfoDiv.classList.add("hidden");
           }
         }
 
-        if (clickedAnnotation) {
-          isTextDragging = true;
-          activeDragAnnotation = clickedAnnotation;
+        /**
+         * Đồng bộ hóa các ô input vào thuộc tính của annotation đang chọn (real-time editing).
+         */
+        function syncInputsToActiveAnnotation() {
+          if (!activeDragAnnotation) {
+            // Không làm gì nếu không có lớp chữ nào được chọn
+            return;
+          }
 
-          // Đồng bộ thuộc tính của lớp chữ đang chọn lên UI controls
-          syncActiveAnnotationToInputs(activeDragAnnotation);
+          activeDragAnnotation.text =
+            document.getElementById("textInput").value;
+          activeDragAnnotation.size =
+            parseInt(document.getElementById("fontSize").value) || 30;
+          activeDragAnnotation.color =
+            document.getElementById("textColor").value;
+          activeDragAnnotation.bgColor =
+            document.getElementById("textBgColor").value;
+          activeDragAnnotation.x =
+            parseInt(document.getElementById("textPositionX").value) || 0;
+          activeDragAnnotation.y =
+            parseInt(document.getElementById("textPositionY").value) || 0;
 
-          dragOffsetX = scaledX - activeDragAnnotation.x;
-          dragOffsetY = scaledY - activeDragAnnotation.y;
-
-          canvas.style.cursor = "move";
-          e.preventDefault();
-          drawCanvas(originalImage);
-        } else {
-          // Nếu không click vào annotation nào, hủy chọn (nếu có)
-          activeDragAnnotation = null;
-          syncActiveAnnotationToInputs(null); // Clears UI feedback
           drawCanvas(originalImage);
         }
-      });
 
-      // MOUSE MOVE: Kéo chữ hoặc vẽ vùng cắt
-      canvas.addEventListener("mousemove", (e) => {
-        // Thay đổi cursor nếu di chuột qua chữ mà không click
-        if (!isCropping && !isTextDragging && annotations.length > 0) {
+        /**
+         * Thêm một chú thích văn bản mới vào mảng.
+         */
+        function addTextAnnotation() {
+          if (!originalImage) return;
+
+          const text = document.getElementById("textInput").value.trim();
+          if (!text) return;
+
+          const size =
+            parseInt(document.getElementById("fontSize").value) || 30;
+          const color = document.getElementById("textColor").value;
+          const bgColor = document.getElementById("textBgColor").value;
+          const x =
+            parseInt(document.getElementById("textPositionX").value) || 50;
+          const y =
+            parseInt(document.getElementById("textPositionY").value) || 50;
+
+          const newId =
+            Date.now().toString(36) + Math.random().toString(36).substring(2);
+
+          const newAnnotation = {
+            id: newId,
+            text: text,
+            size: size,
+            color: color,
+            bgColor: bgColor,
+            x: x,
+            y: y,
+          };
+
+          annotations.push(newAnnotation);
+
+          // Xóa input text sau khi thêm để chuẩn bị cho annotation tiếp theo
+          document.getElementById("textInput").value = "";
+
+          // Hủy chọn lớp chữ hiện tại
+          activeDragAnnotation = null;
+          syncActiveAnnotationToInputs(null);
+
+          drawCanvas(originalImage);
+        }
+
+        /**
+         * Xóa chú thích đang được kéo/chọn.
+         */
+        function deleteActiveAnnotation() {
+          if (!activeDragAnnotation) return;
+
+          const index = annotations.findIndex(
+            (ann) => ann.id === activeDragAnnotation.id
+          );
+          if (index > -1) {
+            annotations.splice(index, 1);
+          }
+
+          activeDragAnnotation = null;
+          syncActiveAnnotationToInputs(null); // Reset annotation controls UI
+          drawCanvas(originalImage);
+        }
+
+        /**
+         * Kiểm tra xem một điểm (tọa độ canvas) có nằm trong vùng annotation không.
+         */
+        function isPointInAnnotation(pointX, pointY, ann) {
+          const tempCtx = canvas.getContext("2d");
+          tempCtx.font = `${ann.size}px Inter, sans-serif`;
+          const lines = ann.text.split("\n");
+          let maxWidth = 0;
+          lines.forEach((line) => {
+            const metrics = tempCtx.measureText(line);
+            if (metrics.width > maxWidth) maxWidth = metrics.width;
+          });
+
+          const padding = 10;
+          const lineHeight = ann.size * 1.2;
+          const totalHeight = lines.length * lineHeight;
+          const totalWidth = maxWidth;
+
+          // Bounding Box Coordinates (bao gồm cả padding của background)
+          const boxX = ann.x - padding;
+          const boxY = ann.y - padding;
+          const boxW = totalWidth + padding * 2;
+          const boxH = totalHeight + padding * 2;
+
+          return (
+            pointX >= boxX &&
+            pointX <= boxX + boxW &&
+            pointY >= boxY &&
+            pointY <= boxY + boxH
+          );
+        }
+
+        // --- Event Listeners for Dragging and Selection ---
+
+        // MOUSE DOWN: Bắt đầu kéo chữ hoặc bắt đầu cắt
+        canvas.addEventListener("mousedown", (e) => {
+          if (!originalImage) return;
+
           const { x: scaledX, y: scaledY } = getCanvasCoords(
             e.clientX,
             e.clientY
           );
-          let overAnnotation = false;
+
+          // 1. Logic Cropping
+          if (isCropping) {
+            cropStart.x = scaledX;
+            cropStart.y = scaledY;
+            cropRect = null;
+            cropApplyBtn.disabled = true;
+            cropApplyBtn.classList.add("opacity-50", "cursor-not-allowed");
+            syncCropInputsToRect();
+            drawCanvas(originalImage);
+            return;
+          }
+
+          // 2. Logic Text Dragging / Selection
+          let clickedAnnotation = null;
           for (let i = annotations.length - 1; i >= 0; i--) {
-            if (isPointInAnnotation(scaledX, scaledY, annotations[i])) {
-              overAnnotation = true;
+            const ann = annotations[i];
+            if (isPointInAnnotation(scaledX, scaledY, ann)) {
+              clickedAnnotation = ann;
               break;
             }
           }
-          canvas.style.cursor = overAnnotation ? "grab" : "default";
+
+          if (clickedAnnotation) {
+            isTextDragging = true;
+            activeDragAnnotation = clickedAnnotation;
+
+            // Đồng bộ thuộc tính của lớp chữ đang chọn lên UI controls
+            syncActiveAnnotationToInputs(activeDragAnnotation);
+
+            dragOffsetX = scaledX - activeDragAnnotation.x;
+            dragOffsetY = scaledY - activeDragAnnotation.y;
+
+            canvas.style.cursor = "move";
+            e.preventDefault();
+            drawCanvas(originalImage);
+          } else {
+            // Nếu không click vào annotation nào, hủy chọn (nếu có)
+            activeDragAnnotation = null;
+            syncActiveAnnotationToInputs(null); // Clears UI feedback
+            drawCanvas(originalImage);
+          }
+        });
+
+        // MOUSE MOVE: Kéo chữ hoặc vẽ vùng cắt
+        canvas.addEventListener("mousemove", (e) => {
+          // Thay đổi cursor nếu di chuột qua chữ mà không click
+          if (!isCropping && !isTextDragging && annotations.length > 0) {
+            const { x: scaledX, y: scaledY } = getCanvasCoords(
+              e.clientX,
+              e.clientY
+            );
+            let overAnnotation = false;
+            for (let i = annotations.length - 1; i >= 0; i--) {
+              if (isPointInAnnotation(scaledX, scaledY, annotations[i])) {
+                overAnnotation = true;
+                break;
+              }
+            }
+            canvas.style.cursor = overAnnotation ? "grab" : "default";
+          }
+
+          if (!originalImage || e.buttons !== 1) return;
+
+          const { x: scaledCurrentX, y: scaledCurrentY } = getCanvasCoords(
+            e.clientX,
+            e.clientY
+          );
+
+          if (isCropping) {
+            // Logic Drawing Crop Area (Giữ nguyên)
+            const clampedX = Math.min(
+              Math.max(0, scaledCurrentX),
+              canvas.width
+            );
+            const clampedY = Math.min(
+              Math.max(0, scaledCurrentY),
+              canvas.height
+            );
+
+            const x = Math.min(cropStart.x, clampedX);
+            const y = Math.min(cropStart.y, clampedY);
+            const w = Math.abs(cropStart.x - clampedX);
+            const h = Math.abs(cropStart.y - clampedY);
+
+            if (w > 10 && h > 10 && x < canvas.width && y < canvas.height) {
+              cropRect = { x: x, y: y, w: w, h: h };
+              syncCropInputsToRect();
+              cropApplyBtn.disabled = false;
+              cropApplyBtn.classList.remove("opacity-50", "cursor-not-allowed");
+            } else {
+              cropRect = null;
+              syncCropInputsToRect();
+              cropApplyBtn.disabled = true;
+              cropApplyBtn.classList.add("opacity-50", "cursor-not-allowed");
+            }
+            drawCanvas(originalImage);
+          } else if (isTextDragging && activeDragAnnotation) {
+            // Logic Text Dragging
+            let newX = scaledCurrentX - dragOffsetX;
+            let newY = scaledCurrentY - dragOffsetY;
+
+            // Giới hạn trong canvas
+            activeDragAnnotation.x = Math.max(
+              0,
+              Math.min(newX, canvas.width - 10)
+            );
+            activeDragAnnotation.y = Math.max(
+              0,
+              Math.min(newY, canvas.height - 10)
+            );
+
+            // Cập nhật input UI (Chỉ khi đang kéo)
+            document.getElementById("textPositionX").value = Math.round(
+              activeDragAnnotation.x
+            );
+            document.getElementById("textPositionY").value = Math.round(
+              activeDragAnnotation.y
+            );
+
+            drawCanvas(originalImage);
+            canvas.style.cursor = "grabbing";
+          }
+        });
+
+        // MOUSE UP: Kết thúc kéo
+        document.addEventListener("mouseup", () => {
+          if (isTextDragging) {
+            isTextDragging = false;
+
+            // Sau khi thả, vẫn giữ lớp chữ đó là ACTIVE để chỉnh sửa thuộc tính
+            if (activeDragAnnotation) {
+              syncActiveAnnotationToInputs(activeDragAnnotation);
+            }
+
+            // Cập nhật lại cursor
+            const { x: scaledX, y: scaledY } = getCanvasCoords(
+              event.clientX,
+              event.clientY
+            );
+            let overAnnotation = false;
+            for (let i = annotations.length - 1; i >= 0; i--) {
+              if (isPointInAnnotation(scaledX, scaledY, annotations[i])) {
+                overAnnotation = true;
+                break;
+              }
+            }
+            canvas.style.cursor = overAnnotation ? "grab" : "default";
+          }
+        });
+
+        // --- Chức năng Cắt (Giữ nguyên) ---
+
+        function syncCropInputsToRect() {
+          if (!cropRect) {
+            document.getElementById("cropX").value = 0;
+            document.getElementById("cropY").value = 0;
+            document.getElementById("cropW").value = 0;
+            document.getElementById("cropH").value = 0;
+            return;
+          }
+          document.getElementById("cropX").value = Math.round(cropRect.x);
+          document.getElementById("cropY").value = Math.round(cropRect.y);
+          document.getElementById("cropW").value = Math.round(cropRect.w);
+          document.getElementById("cropH").value = Math.round(cropRect.h);
         }
 
-        if (!originalImage || e.buttons !== 1) return;
+        function updateCropRectFromInputs() {
+          if (!originalImage || !isCropping) return;
 
-        const { x: scaledCurrentX, y: scaledCurrentY } = getCanvasCoords(
-          e.clientX,
-          e.clientY
-        );
-
-        if (isCropping) {
-          // Logic Drawing Crop Area (Giữ nguyên)
-          const clampedX = Math.min(Math.max(0, scaledCurrentX), canvas.width);
-          const clampedY = Math.min(Math.max(0, scaledCurrentY), canvas.height);
-
-          const x = Math.min(cropStart.x, clampedX);
-          const y = Math.min(cropStart.y, clampedY);
-          const w = Math.abs(cropStart.x - clampedX);
-          const h = Math.abs(cropStart.y - clampedY);
+          const x = Math.min(
+            Math.max(0, parseInt(document.getElementById("cropX").value) || 0),
+            canvas.width
+          );
+          const y = Math.min(
+            Math.max(0, parseInt(document.getElementById("cropY").value) || 0),
+            canvas.height
+          );
+          const w = Math.min(
+            Math.max(0, parseInt(document.getElementById("cropW").value) || 0),
+            canvas.width - x
+          );
+          const h = Math.min(
+            Math.max(0, parseInt(document.getElementById("cropH").value) || 0),
+            canvas.height - y
+          );
 
           if (w > 10 && h > 10 && x < canvas.width && y < canvas.height) {
             cropRect = { x: x, y: y, w: w, h: h };
@@ -979,447 +1496,391 @@
             cropApplyBtn.classList.add("opacity-50", "cursor-not-allowed");
           }
           drawCanvas(originalImage);
-        } else if (isTextDragging && activeDragAnnotation) {
-          // Logic Text Dragging
-          let newX = scaledCurrentX - dragOffsetX;
-          let newY = scaledCurrentY - dragOffsetY;
+        }
 
-          // Giới hạn trong canvas
-          activeDragAnnotation.x = Math.max(
-            0,
-            Math.min(newX, canvas.width - 10)
-          );
-          activeDragAnnotation.y = Math.max(
-            0,
-            Math.min(newY, canvas.height - 10)
-          );
+        function toggleCropMode() {
+          if (!originalImage) return;
 
-          // Cập nhật input UI (Chỉ khi đang kéo)
-          document.getElementById("textPositionX").value = Math.round(
-            activeDragAnnotation.x
-          );
-          document.getElementById("textPositionY").value = Math.round(
-            activeDragAnnotation.y
-          );
+          isCropping = !isCropping;
+          const cropBtn = document.getElementById("cropModeBtn");
+          const cropInputsDiv = document.getElementById("cropInfoInputs");
 
+          if (isCropping) {
+            isTextDragging = false;
+            cropBtn.classList.replace("btn-secondary", "bg-red-500");
+            cropBtn.classList.add("text-white");
+            cropBtn.textContent = "❌ Hủy Cắt";
+            canvas.style.cursor = "crosshair";
+            cropApplyBtn.disabled = true;
+            cropApplyBtn.classList.add("opacity-50", "cursor-not-allowed");
+            cropRect = null;
+            syncCropInputsToRect();
+            cropInputsDiv.classList.remove("invisible");
+          } else {
+            cropBtn.classList.replace("bg-red-500", "btn-secondary");
+            cropBtn.classList.remove("text-white");
+            cropBtn.textContent = "✂️ Chế Độ Cắt";
+            canvas.style.cursor = "default";
+            cropApplyBtn.disabled = true;
+            cropApplyBtn.classList.add("opacity-50", "cursor-not-allowed");
+            cropRect = null;
+            cropInputsDiv.classList.add("invisible");
+          }
           drawCanvas(originalImage);
-          canvas.style.cursor = "grabbing";
         }
-      });
 
-      // MOUSE UP: Kết thúc kéo
-      document.addEventListener("mouseup", () => {
-        if (isTextDragging) {
-          isTextDragging = false;
+        function performCrop() {
+          if (!originalImage || !cropRect) return;
 
-          // Sau khi thả, vẫn giữ lớp chữ đó là ACTIVE để chỉnh sửa thuộc tính
-          if (activeDragAnnotation) {
-            syncActiveAnnotationToInputs(activeDragAnnotation);
-          }
+          const widthAfterRotate =
+            rotationAngle % 180 !== 0
+              ? originalImage.height
+              : originalImage.width;
+          const heightAfterRotate =
+            rotationAngle % 180 !== 0
+              ? originalImage.width
+              : originalImage.height;
 
-          // Cập nhật lại cursor
-          const { x: scaledX, y: scaledY } = getCanvasCoords(
-            event.clientX,
-            event.clientY
+          const fullTransformCanvas = document.createElement("canvas");
+          const ftCtx = fullTransformCanvas.getContext("2d");
+          fullTransformCanvas.width = widthAfterRotate;
+          fullTransformCanvas.height = heightAfterRotate;
+
+          ftCtx.translate(
+            fullTransformCanvas.width / 2,
+            fullTransformCanvas.height / 2
           );
-          let overAnnotation = false;
-          for (let i = annotations.length - 1; i >= 0; i--) {
-            if (isPointInAnnotation(scaledX, scaledY, annotations[i])) {
-              overAnnotation = true;
-              break;
-            }
-          }
-          canvas.style.cursor = overAnnotation ? "grab" : "default";
+          ftCtx.rotate((rotationAngle * Math.PI) / 180);
+          ftCtx.scale(flipH, 1);
+          ftCtx.drawImage(
+            originalImage,
+            -originalImage.width / 2,
+            -originalImage.height / 2,
+            originalImage.width,
+            originalImage.height
+          );
+          ftCtx.restore();
+
+          const ratioX = fullTransformCanvas.width / canvas.width;
+          const ratioY = fullTransformCanvas.height / canvas.height;
+
+          const cropX = cropRect.x * ratioX;
+          const cropY = cropRect.y * ratioY;
+          const cropW = cropRect.w * ratioX;
+          const cropH = cropRect.h * ratioY;
+
+          const finalCanvas = document.createElement("canvas");
+          const finalCtx = finalCanvas.getContext("2d");
+          finalCanvas.width = cropW;
+          finalCanvas.height = cropH;
+
+          finalCtx.drawImage(
+            fullTransformCanvas,
+            cropX,
+            cropY,
+            cropW,
+            cropH,
+            0,
+            0,
+            cropW,
+            cropH
+          );
+
+          const newImg = new Image();
+          newImg.onload = function () {
+            originalImage = newImg;
+
+            rotationAngle = 0;
+            flipH = 1;
+
+            toggleCropMode();
+            cropRect = null;
+
+            // Cập nhật lại tọa độ annotation cho ảnh đã cắt
+            annotations.forEach((ann) => {
+              ann.x = ann.x * (newImg.width / cropW);
+              ann.y = ann.y * (newImg.height / cropH);
+            });
+
+            applyFilters();
+          };
+          newImg.src = finalCanvas.toDataURL();
         }
-      });
 
-      // --- Chức năng Cắt (Giữ nguyên) ---
+        // --- Hàm Tải Ảnh (Giữ nguyên) ---
 
-      function syncCropInputsToRect() {
-        if (!cropRect) {
-          document.getElementById("cropX").value = 0;
-          document.getElementById("cropY").value = 0;
-          document.getElementById("cropW").value = 0;
-          document.getElementById("cropH").value = 0;
-          return;
-        }
-        document.getElementById("cropX").value = Math.round(cropRect.x);
-        document.getElementById("cropY").value = Math.round(cropRect.y);
-        document.getElementById("cropW").value = Math.round(cropRect.w);
-        document.getElementById("cropH").value = Math.round(cropRect.h);
-      }
+        function downloadImage() {
+          if (!originalImage) return;
 
-      function updateCropRectFromInputs() {
-        if (!originalImage || !isCropping) return;
+          const finalCanvas = document.createElement("canvas");
+          const finalCtx = finalCanvas.getContext("2d");
 
-        const x = Math.min(
-          Math.max(0, parseInt(document.getElementById("cropX").value) || 0),
-          canvas.width
-        );
-        const y = Math.min(
-          Math.max(0, parseInt(document.getElementById("cropY").value) || 0),
-          canvas.height
-        );
-        const w = Math.min(
-          Math.max(0, parseInt(document.getElementById("cropW").value) || 0),
-          canvas.width - x
-        );
-        const h = Math.min(
-          Math.max(0, parseInt(document.getElementById("cropH").value) || 0),
-          canvas.height - y
-        );
-
-        if (w > 10 && h > 10 && x < canvas.width && y < canvas.height) {
-          cropRect = { x: x, y: y, w: w, h: h };
-          syncCropInputsToRect();
-          cropApplyBtn.disabled = false;
-          cropApplyBtn.classList.remove("opacity-50", "cursor-not-allowed");
-        } else {
-          cropRect = null;
-          syncCropInputsToRect();
-          cropApplyBtn.disabled = true;
-          cropApplyBtn.classList.add("opacity-50", "cursor-not-allowed");
-        }
-        drawCanvas(originalImage);
-      }
-
-      function toggleCropMode() {
-        if (!originalImage) return;
-
-        isCropping = !isCropping;
-        const cropBtn = document.getElementById("cropModeBtn");
-        const cropInputsDiv = document.getElementById("cropInfoInputs");
-
-        if (isCropping) {
-          isTextDragging = false;
-          cropBtn.classList.replace("btn-secondary", "bg-red-500");
-          cropBtn.classList.add("text-white");
-          cropBtn.textContent = "❌ Hủy Cắt";
-          canvas.style.cursor = "crosshair";
-          cropApplyBtn.disabled = true;
-          cropApplyBtn.classList.add("opacity-50", "cursor-not-allowed");
-          cropRect = null;
-          syncCropInputsToRect();
-          cropInputsDiv.classList.remove("invisible");
-        } else {
-          cropBtn.classList.replace("bg-red-500", "btn-secondary");
-          cropBtn.classList.remove("text-white");
-          cropBtn.textContent = "✂️ Chế Độ Cắt";
-          canvas.style.cursor = "default";
-          cropApplyBtn.disabled = true;
-          cropApplyBtn.classList.add("opacity-50", "cursor-not-allowed");
-          cropRect = null;
-          cropInputsDiv.classList.add("invisible");
-        }
-        drawCanvas(originalImage);
-      }
-
-      function performCrop() {
-        if (!originalImage || !cropRect) return;
-
-        const widthAfterRotate =
-          rotationAngle % 180 !== 0
+          const isRotated = rotationAngle % 180 !== 0;
+          finalCanvas.width = isRotated
             ? originalImage.height
             : originalImage.width;
-        const heightAfterRotate =
-          rotationAngle % 180 !== 0
+          finalCanvas.height = isRotated
             ? originalImage.width
             : originalImage.height;
 
-        const fullTransformCanvas = document.createElement("canvas");
-        const ftCtx = fullTransformCanvas.getContext("2d");
-        fullTransformCanvas.width = widthAfterRotate;
-        fullTransformCanvas.height = heightAfterRotate;
+          const filterString = canvas.style.filter;
+          finalCtx.filter = filterString;
 
-        ftCtx.translate(
-          fullTransformCanvas.width / 2,
-          fullTransformCanvas.height / 2
-        );
-        ftCtx.rotate((rotationAngle * Math.PI) / 180);
-        ftCtx.scale(flipH, 1);
-        ftCtx.drawImage(
-          originalImage,
-          -originalImage.width / 2,
-          -originalImage.height / 2,
-          originalImage.width,
-          originalImage.height
-        );
-        ftCtx.restore();
+          finalCtx.translate(finalCanvas.width / 2, finalCanvas.height / 2);
+          finalCtx.rotate((rotationAngle * Math.PI) / 180);
+          finalCtx.scale(flipH, 1);
 
-        const ratioX = fullTransformCanvas.width / canvas.width;
-        const ratioY = fullTransformCanvas.height / canvas.height;
+          let drawX = -originalImage.width / 2;
+          let drawY = -originalImage.height / 2;
+          let drawW = originalImage.width;
+          let drawH = originalImage.height;
+          finalCtx.drawImage(originalImage, drawX, drawY, drawW, drawH);
 
-        const cropX = cropRect.x * ratioX;
-        const cropY = cropRect.y * ratioY;
-        const cropW = cropRect.w * ratioX;
-        const cropH = cropRect.h * ratioY;
+          finalCtx.restore();
 
-        const finalCanvas = document.createElement("canvas");
-        const finalCtx = finalCanvas.getContext("2d");
-        finalCanvas.width = cropW;
-        finalCanvas.height = cropH;
+          finalCtx.save();
+          finalCtx.setTransform(1, 0, 0, 1, 0, 0);
 
-        finalCtx.drawImage(
-          fullTransformCanvas,
-          cropX,
-          cropY,
-          cropW,
-          cropH,
-          0,
-          0,
-          cropW,
-          cropH
-        );
-
-        const newImg = new Image();
-        newImg.onload = function () {
-          originalImage = newImg;
-
-          rotationAngle = 0;
-          flipH = 1;
-
-          toggleCropMode();
-          cropRect = null;
-
-          // Cập nhật lại tọa độ annotation cho ảnh đã cắt
           annotations.forEach((ann) => {
-            ann.x = ann.x * (newImg.width / cropW);
-            ann.y = ann.y * (newImg.height / cropH);
+            finalCtx.font = `${ann.size}px Inter, sans-serif`;
+            finalCtx.textBaseline = "top";
+
+            const lines = ann.text.split("\n");
+            let maxWidth = 0;
+            lines.forEach((line) => {
+              const metrics = finalCtx.measureText(line);
+              if (metrics.width > maxWidth) maxWidth = metrics.width;
+            });
+
+            const padding = 10;
+            const lineHeight = ann.size * 1.2;
+            const totalHeight = lines.length * lineHeight;
+            const totalWidth = maxWidth;
+
+            finalCtx.fillStyle = ann.bgColor;
+            finalCtx.fillRect(
+              ann.x - padding,
+              ann.y - padding,
+              totalWidth + padding * 2,
+              totalHeight + padding * 2
+            );
+
+            finalCtx.fillStyle = ann.color;
+            lines.forEach((line, index) => {
+              finalCtx.fillText(line, ann.x, ann.y + index * lineHeight);
+            });
           });
+          finalCtx.restore();
 
-          applyFilters();
-        };
-        newImg.src = finalCanvas.toDataURL();
-      }
+          const format = downloadFormat.value;
+          const extension = format.split("/")[1];
 
-      // --- Hàm Tải Ảnh (Giữ nguyên) ---
-
-      function downloadImage() {
-        if (!originalImage) return;
-
-        const finalCanvas = document.createElement("canvas");
-        const finalCtx = finalCanvas.getContext("2d");
-
-        const isRotated = rotationAngle % 180 !== 0;
-        finalCanvas.width = isRotated
-          ? originalImage.height
-          : originalImage.width;
-        finalCanvas.height = isRotated
-          ? originalImage.width
-          : originalImage.height;
-
-        const filterString = canvas.style.filter;
-        finalCtx.filter = filterString;
-
-        finalCtx.translate(finalCanvas.width / 2, finalCanvas.height / 2);
-        finalCtx.rotate((rotationAngle * Math.PI) / 180);
-        finalCtx.scale(flipH, 1);
-
-        let drawX = -originalImage.width / 2;
-        let drawY = -originalImage.height / 2;
-        let drawW = originalImage.width;
-        let drawH = originalImage.height;
-        finalCtx.drawImage(originalImage, drawX, drawY, drawW, drawH);
-
-        finalCtx.restore();
-
-        finalCtx.save();
-        finalCtx.setTransform(1, 0, 0, 1, 0, 0);
-
-        annotations.forEach((ann) => {
-          finalCtx.font = `${ann.size}px Inter, sans-serif`;
-          finalCtx.textBaseline = "top";
-
-          const lines = ann.text.split("\n");
-          let maxWidth = 0;
-          lines.forEach((line) => {
-            const metrics = finalCtx.measureText(line);
-            if (metrics.width > maxWidth) maxWidth = metrics.width;
-          });
-
-          const padding = 10;
-          const lineHeight = ann.size * 1.2;
-          const totalHeight = lines.length * lineHeight;
-          const totalWidth = maxWidth;
-
-          finalCtx.fillStyle = ann.bgColor;
-          finalCtx.fillRect(
-            ann.x - padding,
-            ann.y - padding,
-            totalWidth + padding * 2,
-            totalHeight + padding * 2
+          finalCanvas.toBlob(
+            function (blob) {
+              const url = URL.createObjectURL(blob);
+              const a = document.createElement("a");
+              a.href = url;
+              a.download = `edited_image_${Date.now()}.${extension}`;
+              document.body.appendChild(a);
+              a.click();
+              document.body.removeChild(a);
+              URL.revokeObjectURL(url);
+            },
+            format,
+            0.9
           );
+        }
 
-          finalCtx.fillStyle = ann.color;
-          lines.forEach((line, index) => {
-            finalCtx.fillText(line, ann.x, ann.y + index * lineHeight);
-          });
-        });
-        finalCtx.restore();
+        // --- Hàm Xử Lý AI Image Generation (Giữ nguyên) ---
 
-        const format = downloadFormat.value;
-        const extension = format.split("/")[1];
+        function getImageBase64() {
+          if (!originalImage) return null;
 
-        finalCanvas.toBlob(
-          function (blob) {
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement("a");
-            a.href = url;
-            a.download = `edited_image_${Date.now()}.${extension}`;
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-            URL.revokeObjectURL(url);
-          },
-          format,
-          0.9
-        );
-      }
+          const tempCanvas = document.createElement("canvas");
+          const tempCtx = tempCanvas.getContext("2d");
 
-      // --- Hàm Xử Lý AI Image Generation (Giữ nguyên) ---
+          const isRotated = rotationAngle % 180 !== 0;
+          tempCanvas.width = isRotated
+            ? originalImage.height
+            : originalImage.width;
+          tempCanvas.height = isRotated
+            ? originalImage.width
+            : originalImage.height;
 
-      function getImageBase64() {
-        if (!originalImage) return null;
+          tempCtx.filter = canvas.style.filter;
 
-        const tempCanvas = document.createElement("canvas");
-        const tempCtx = tempCanvas.getContext("2d");
-
-        const isRotated = rotationAngle % 180 !== 0;
-        tempCanvas.width = isRotated
-          ? originalImage.height
-          : originalImage.width;
-        tempCanvas.height = isRotated
-          ? originalImage.width
-          : originalImage.height;
-
-        tempCtx.filter = canvas.style.filter;
-
-        tempCtx.translate(tempCanvas.width / 2, tempCanvas.height / 2);
-        tempCtx.rotate((rotationAngle * Math.PI) / 180);
-        tempCtx.scale(flipH, 1);
-        tempCtx.drawImage(
-          originalImage,
-          -originalImage.width / 2,
-          -originalImage.height / 2,
-          originalImage.width,
-          originalImage.height
-        );
-        tempCtx.restore();
-
-        // Vẽ Annotations (Chữ) lên ảnh để gửi cho AI
-        tempCtx.save();
-        tempCtx.setTransform(1, 0, 0, 1, 0, 0);
-        annotations.forEach((ann) => {
-          tempCtx.font = `${ann.size}px Inter, sans-serif`;
-          tempCtx.textBaseline = "top";
-
-          const lines = ann.text.split("\n");
-          let maxWidth = 0;
-          lines.forEach((line) => {
-            const metrics = tempCtx.measureText(line);
-            if (metrics.width > maxWidth) maxWidth = metrics.width;
-          });
-
-          const padding = 10;
-          const lineHeight = ann.size * 1.2;
-          const totalHeight = lines.length * lineHeight;
-          const totalWidth = maxWidth;
-
-          tempCtx.fillStyle = ann.bgColor;
-          tempCtx.fillRect(
-            ann.x - padding,
-            ann.y - padding,
-            totalWidth + padding * 2,
-            totalHeight + padding * 2
+          tempCtx.translate(tempCanvas.width / 2, tempCanvas.height / 2);
+          tempCtx.rotate((rotationAngle * Math.PI) / 180);
+          tempCtx.scale(flipH, 1);
+          tempCtx.drawImage(
+            originalImage,
+            -originalImage.width / 2,
+            -originalImage.height / 2,
+            originalImage.width,
+            originalImage.height
           );
+          tempCtx.restore();
 
-          tempCtx.fillStyle = ann.color;
-          lines.forEach((line, index) => {
-            tempCtx.fillText(line, ann.x, ann.y + index * lineHeight);
+          // Vẽ Annotations (Chữ) lên ảnh để gửi cho AI
+          tempCtx.save();
+          tempCtx.setTransform(1, 0, 0, 1, 0, 0);
+          annotations.forEach((ann) => {
+            tempCtx.font = `${ann.size}px Inter, sans-serif`;
+            tempCtx.textBaseline = "top";
+
+            const lines = ann.text.split("\n");
+            let maxWidth = 0;
+            lines.forEach((line) => {
+              const metrics = tempCtx.measureText(line);
+              if (metrics.width > maxWidth) maxWidth = metrics.width;
+            });
+
+            const padding = 10;
+            const lineHeight = ann.size * 1.2;
+            const totalHeight = lines.length * lineHeight;
+            const totalWidth = maxWidth;
+
+            tempCtx.fillStyle = ann.bgColor;
+            tempCtx.fillRect(
+              ann.x - padding,
+              ann.y - padding,
+              totalWidth + padding * 2,
+              totalHeight + padding * 2
+            );
+
+            tempCtx.fillStyle = ann.color;
+            lines.forEach((line, index) => {
+              tempCtx.fillText(line, ann.x, ann.y + index * lineHeight);
+            });
           });
-        });
-        tempCtx.restore();
+          tempCtx.restore();
 
-        const dataURL = tempCanvas.toDataURL("image/png");
-        return dataURL.split(",")[1];
+          const dataURL = tempCanvas.toDataURL("image/png");
+          return dataURL.split(",")[1];
+        }
+
+        async function generateAIImage() {
+          const prompt = document.getElementById("aiPrompt").value.trim();
+          const resultDiv = document.getElementById("aiResult");
+          const generateBtn = document.getElementById("generateBtn");
+
+          if (!prompt) {
+            resultDiv.innerHTML = `<p class="text-red-400 text-sm text-center p-4">Vui lòng nhập mô tả để tạo ảnh!</p>`;
+            return;
+          }
+
+          const base64ImageData = getImageBase64();
+          let contents = [{ parts: [{ text: prompt }] }];
+          let modalityText = "Mô hình AI tạo ảnh Text-to-Image...";
+
+          if (base64ImageData) {
+            contents = [
+              {
+                parts: [
+                  { text: prompt },
+                  {
+                    inlineData: {
+                      mimeType: "image/png",
+                      data: base64ImageData,
+                    },
+                  },
+                ],
+              },
+            ];
+            modalityText = "Mô hình AI chỉnh sửa ảnh Image-to-Image...";
+          }
+
+          generateBtn.disabled = true;
+          generateBtn.innerHTML = `<div class="flex items-center justify-center space-x-2"><div class="spinner"></div><span>${modalityText}</span></div>`;
+          resultDiv.innerHTML =
+            '<div class="flex items-center justify-center h-full"><div class="spinner border-t-white"></div></div>';
+
+          try {
+            const payload = {
+              contents: contents,
+              generationConfig: {
+                responseModalities: ["TEXT", "IMAGE"],
+              },
+              systemInstruction: systemInstruction,
+            };
+
+            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`;
+
+            let response;
+            let delay = 1000;
+            const maxRetries = 5;
+
+            for (let i = 0; i < maxRetries; i++) {
+              response = await fetch(apiUrl, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(payload),
+              });
+
+              if (response.ok) {
+                break;
+              }
+              if (response.status === 429 && i < maxRetries - 1) {
+                await new Promise((resolve) => setTimeout(resolve, delay));
+                delay *= 2;
+              } else {
+                throw new Error(`API returned status ${response.status}`);
+              }
+            }
+
+            if (!response || !response.ok) {
+              throw new Error("Lỗi mạng hoặc server API.");
+            }
+
+            const result = await response.json();
+            const base64Data = result?.candidates?.[0]?.content?.parts?.find(
+              (p) => p.inlineData
+            )?.inlineData?.data;
+
+            if (base64Data) {
+              const imageUrl = `data:image/png;base64,${base64Data}`;
+
+              resultDiv.innerHTML = `
+                        <img src="${imageUrl}" alt="AI Generated Image" class="w-full h-full object-cover rounded-xl" />
+                    `;
+
+              const downloadAI = document.createElement("a");
+              downloadAI.href = imageUrl;
+              downloadAI.download = `ai_image_${Date.now()}.png`;
+              downloadAI.className = "btn-primary mt-2 block text-center";
+              downloadAI.textContent = "Tải Ảnh AI";
+
+              const container = document.createElement("div");
+              container.className =
+                "absolute bottom-3 left-0 right-0 p-3 bg-black bg-opacity-50 flex justify-center rounded-b-xl";
+              container.appendChild(downloadAI);
+              resultDiv.appendChild(container);
+            } else {
+              resultDiv.innerHTML = `<p class="text-red-400 text-sm text-center p-4">Không thể tạo ảnh. Vui lòng thử lại với mô tả khác.</p>`;
+            }
+          } catch (error) {
+            console.error("AI Image Generation Error:", error);
+            resultDiv.innerHTML = `<p class="text-red-400 text-sm text-center p-4">Lỗi: ${error.message}. Kiểm tra console để biết chi tiết.</p>`;
+          } finally {
+            generateBtn.disabled = false;
+            generateBtn.innerHTML = "Tạo/Chỉnh Sửa Ảnh Mới";
+          }
+        }
+      </script>
+    </div>
+
+    <script>
+      function openNav() {
+        document.getElementById("mySidenav").style.width = "250px";
+        document.getElementById("main").style.marginLeft = "250px";
       }
 
-      // ... (các biến và hàm khác giữ nguyên)
-
-async function generateAIImage() {
-  const prompt = document.getElementById("aiPrompt").value.trim();
-  const resultDiv = document.getElementById("aiResult");
-  const generateBtn = document.getElementById("generateBtn");
-
-  if (!prompt) {
-    resultDiv.innerHTML = `<p class="text-red-400 text-sm text-center p-4">Vui lòng nhập mô tả để tạo ảnh!</p>`;
-    return;
-  }
-
-  const base64ImageData = getImageBase64(); // Lấy ảnh hiện tại trên canvas
-
-  let modalityText = "Mô hình AI tạo ảnh Text-to-Image...";
-  if (base64ImageData) {
-    modalityText = "Mô hình AI chỉnh sửa ảnh Image-to-Image...";
-  }
-
-  generateBtn.disabled = true;
-  generateBtn.innerHTML = `<div class="flex items-center justify-center space-x-2"><div class="spinner"></div><span>${modalityText}</span></div>`;
-  resultDiv.innerHTML =
-    '<div class="flex items-center justify-center h-full"><div class="spinner border-t-white"></div></div>';
-
-  try {
-    const payload = {
-      prompt: prompt,
-      image_data: base64ImageData, // Gửi base64 image data (có thể là null)
-    };
-
-    // Gọi đến endpoint của backend Flask
-    const response = await fetch("/generate_ai_image", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload),
-    });
-
-    if (!response.ok) {
-      const errorData = await response.json();
-      throw new Error(
-        errorData.error || `API returned status ${response.status}`
-      );
-    }
-
-    const result = await response.json();
-    const base64Data = result.image_data; // Nhận base64 data từ backend
-
-    if (base64Data) {
-      const imageUrl = `data:image/png;base64,${base64Data}`;
-
-      resultDiv.innerHTML = `
-        <img src="${imageUrl}" alt="AI Generated Image" class="w-full h-full object-cover rounded-xl" />
-      `;
-
-      const downloadAI = document.createElement("a");
-      downloadAI.href = imageUrl;
-      downloadAI.download = `ai_image_${Date.now()}.png`;
-      downloadAI.className = "btn-primary mt-2 block text-center";
-      downloadAI.textContent = "Tải Ảnh AI";
-
-      const container = document.createElement("div");
-      container.className =
-        "absolute bottom-3 left-0 right-0 p-3 bg-black bg-opacity-50 flex justify-center rounded-b-xl";
-      container.appendChild(downloadAI);
-      resultDiv.appendChild(container);
-    } else {
-      resultDiv.innerHTML = `<p class="text-red-400 text-sm text-center p-4">Không thể tạo ảnh. Vui lòng thử lại với mô tả khác.</p>`;
-    }
-  } catch (error) {
-    console.error("AI Image Generation Error:", error);
-    resultDiv.innerHTML = `<p class="text-red-400 text-sm text-center p-4">Lỗi: ${error.message}. Kiểm tra console để biết chi tiết.</p>`;
-  } finally {
-    generateBtn.disabled = false;
-    generateBtn.innerHTML = "Tạo/Chỉnh Sửa Ảnh Mới";
-  }
-}
+      function closeNav() {
+        document.getElementById("mySidenav").style.width = "0";
+        document.getElementById("main").style.marginLeft = "0";
+      }
     </script>
+
+    <!-- something new e -->
   </body>
 </html>
