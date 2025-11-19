@@ -1348,113 +1348,82 @@
         return dataURL.split(",")[1];
       }
 
-      async function generateAIImage() {
-        const prompt = document.getElementById("aiPrompt").value.trim();
-        const resultDiv = document.getElementById("aiResult");
-        const generateBtn = document.getElementById("generateBtn");
+      // ... (các biến và hàm khác giữ nguyên)
 
-        if (!prompt) {
-          resultDiv.innerHTML = `<p class="text-red-400 text-sm text-center p-4">Vui lòng nhập mô tả để tạo ảnh!</p>`;
-          return;
-        }
+async function generateAIImage() {
+  const prompt = document.getElementById("aiPrompt").value.trim();
+  const resultDiv = document.getElementById("aiResult");
+  const generateBtn = document.getElementById("generateBtn");
 
-        const base64ImageData = getImageBase64();
-        let contents = [{ parts: [{ text: prompt }] }];
-        let modalityText = "Mô hình AI tạo ảnh Text-to-Image...";
+  if (!prompt) {
+    resultDiv.innerHTML = `<p class="text-red-400 text-sm text-center p-4">Vui lòng nhập mô tả để tạo ảnh!</p>`;
+    return;
+  }
 
-        if (base64ImageData) {
-          contents = [
-            {
-              parts: [
-                { text: prompt },
-                {
-                  inlineData: {
-                    mimeType: "image/png",
-                    data: base64ImageData,
-                  },
-                },
-              ],
-            },
-          ];
-          modalityText = "Mô hình AI chỉnh sửa ảnh Image-to-Image...";
-        }
+  const base64ImageData = getImageBase64(); // Lấy ảnh hiện tại trên canvas
 
-        generateBtn.disabled = true;
-        generateBtn.innerHTML = `<div class="flex items-center justify-center space-x-2"><div class="spinner"></div><span>${modalityText}</span></div>`;
-        resultDiv.innerHTML =
-          '<div class="flex items-center justify-center h-full"><div class="spinner border-t-white"></div></div>';
+  let modalityText = "Mô hình AI tạo ảnh Text-to-Image...";
+  if (base64ImageData) {
+    modalityText = "Mô hình AI chỉnh sửa ảnh Image-to-Image...";
+  }
 
-        try {
-          const payload = {
-            contents: contents,
-            generationConfig: {
-              responseModalities: ["TEXT", "IMAGE"],
-            },
-            systemInstruction: systemInstruction,
-          };
+  generateBtn.disabled = true;
+  generateBtn.innerHTML = `<div class="flex items-center justify-center space-x-2"><div class="spinner"></div><span>${modalityText}</span></div>`;
+  resultDiv.innerHTML =
+    '<div class="flex items-center justify-center h-full"><div class="spinner border-t-white"></div></div>';
 
-          const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`;
+  try {
+    const payload = {
+      prompt: prompt,
+      image_data: base64ImageData, // Gửi base64 image data (có thể là null)
+    };
 
-          let response;
-          let delay = 1000;
-          const maxRetries = 5;
+    // Gọi đến endpoint của backend Flask
+    const response = await fetch("/generate_ai_image", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
+    });
 
-          for (let i = 0; i < maxRetries; i++) {
-            response = await fetch(apiUrl, {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify(payload),
-            });
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(
+        errorData.error || `API returned status ${response.status}`
+      );
+    }
 
-            if (response.ok) {
-              break;
-            }
-            if (response.status === 429 && i < maxRetries - 1) {
-              await new Promise((resolve) => setTimeout(resolve, delay));
-              delay *= 2;
-            } else {
-              throw new Error(`API returned status ${response.status}`);
-            }
-          }
+    const result = await response.json();
+    const base64Data = result.image_data; // Nhận base64 data từ backend
 
-          if (!response || !response.ok) {
-            throw new Error("Lỗi mạng hoặc server API.");
-          }
+    if (base64Data) {
+      const imageUrl = `data:image/png;base64,${base64Data}`;
 
-          const result = await response.json();
-          const base64Data = result?.candidates?.[0]?.content?.parts?.find(
-            (p) => p.inlineData
-          )?.inlineData?.data;
+      resultDiv.innerHTML = `
+        <img src="${imageUrl}" alt="AI Generated Image" class="w-full h-full object-cover rounded-xl" />
+      `;
 
-          if (base64Data) {
-            const imageUrl = `data:image/png;base64,${base64Data}`;
+      const downloadAI = document.createElement("a");
+      downloadAI.href = imageUrl;
+      downloadAI.download = `ai_image_${Date.now()}.png`;
+      downloadAI.className = "btn-primary mt-2 block text-center";
+      downloadAI.textContent = "Tải Ảnh AI";
 
-            resultDiv.innerHTML = `
-                        <img src="${imageUrl}" alt="AI Generated Image" class="w-full h-full object-cover rounded-xl" />
-                    `;
-
-            const downloadAI = document.createElement("a");
-            downloadAI.href = imageUrl;
-            downloadAI.download = `ai_image_${Date.now()}.png`;
-            downloadAI.className = "btn-primary mt-2 block text-center";
-            downloadAI.textContent = "Tải Ảnh AI";
-
-            const container = document.createElement("div");
-            container.className =
-              "absolute bottom-3 left-0 right-0 p-3 bg-black bg-opacity-50 flex justify-center rounded-b-xl";
-            container.appendChild(downloadAI);
-            resultDiv.appendChild(container);
-          } else {
-            resultDiv.innerHTML = `<p class="text-red-400 text-sm text-center p-4">Không thể tạo ảnh. Vui lòng thử lại với mô tả khác.</p>`;
-          }
-        } catch (error) {
-          console.error("AI Image Generation Error:", error);
-          resultDiv.innerHTML = `<p class="text-red-400 text-sm text-center p-4">Lỗi: ${error.message}. Kiểm tra console để biết chi tiết.</p>`;
-        } finally {
-          generateBtn.disabled = false;
-          generateBtn.innerHTML = "Tạo/Chỉnh Sửa Ảnh Mới";
-        }
-      }
+      const container = document.createElement("div");
+      container.className =
+        "absolute bottom-3 left-0 right-0 p-3 bg-black bg-opacity-50 flex justify-center rounded-b-xl";
+      container.appendChild(downloadAI);
+      resultDiv.appendChild(container);
+    } else {
+      resultDiv.innerHTML = `<p class="text-red-400 text-sm text-center p-4">Không thể tạo ảnh. Vui lòng thử lại với mô tả khác.</p>`;
+    }
+  } catch (error) {
+    console.error("AI Image Generation Error:", error);
+    resultDiv.innerHTML = `<p class="text-red-400 text-sm text-center p-4">Lỗi: ${error.message}. Kiểm tra console để biết chi tiết.</p>`;
+  } finally {
+    generateBtn.disabled = false;
+    generateBtn.innerHTML = "Tạo/Chỉnh Sửa Ảnh Mới";
+  }
+}
     </script>
   </body>
 </html>
