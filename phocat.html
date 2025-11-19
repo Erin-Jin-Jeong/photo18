@@ -14,7 +14,7 @@
       body {
         font-family: "Inter", sans-serif;
         background-color: #000000;
-        color: #44976d;
+        color: #29ee8c;
       }
       /* Custom scrollbar for better aesthetics */
       ::-webkit-scrollbar {
@@ -28,7 +28,7 @@
         border-radius: 4px;
       }
       ::-webkit-scrollbar-thumb:hover {
-        background: #6b7280;
+        background: #1e386c;
       }
 
       /* Canvas container styles */
@@ -99,7 +99,7 @@
         z-index: 1;
         top: 0;
         left: 0;
-        background-color: #111;
+        background-color: #000000;
         overflow-x: hidden;
         transition: 0.5s;
         padding-top: 60px;
@@ -109,13 +109,13 @@
         padding: 8px 8px 8px 32px;
         text-decoration: none;
         font-size: 25px;
-        color: #818181;
+        color: #fffdfd;
         display: block;
         transition: 0.3s;
       }
 
       .sidenav a:hover {
-        color: #f1f1f1;
+        color: #ffffff;
       }
 
       .sidenav .closebtn {
@@ -143,8 +143,8 @@
 
       /*  no1 s */
      .accordion {
-  background-color: #eee;
-  color: #444;
+  background-color: #000000;
+  color: #ffffff;
   cursor: pointer;
   padding: 18px;
   width: 100%;
@@ -156,13 +156,13 @@
 }
 
 .active, .accordion:hover {
-  background-color: #ccc; 
+  background-color: #000000; 
 }
 
 .panel {
   padding: 0 18px;
   display: none;
-  background-color: white;
+  background-color: rgb(0, 0, 0);
   overflow: hidden;
 }
       /* no1 e */
@@ -188,11 +188,41 @@
 
 
           <!-- no1 s -->
-          <h2>Accordion</h2>
+          <!-- <h2>Accordion</h2> -->
 
-<button class="accordion">Section 1</button>
+<button class="accordion">Quản lý ảnh</button>
 <div class="panel">
-  <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+  <label
+            for="imageUpload"
+            class="btn-primary block text-center cursor-pointer"
+          >
+            Chọn và Tải Ảnh Lên
+          </label>
+          <input
+            type="file"
+            id="imageUpload"
+            accept="image/*"
+            class="hidden"
+            onchange="handleImageUpload(event)"
+          />
+
+          <button
+            id="downloadBtn"
+            class="btn-secondary w-full opacity-50 cursor-not-allowed"
+            disabled
+            onclick="downloadImage()"
+          >
+            📥 Tải Ảnh Đã Chỉnh Sửa
+          </button>
+          <select
+            id="downloadFormat"
+            class="w-full p-2 border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500 "
+          >
+            <option value="image/png">PNG</option>
+            <option value="image/jpeg">JPEG</option>
+            <option value="image/gif">GIF</option>
+            <option value="image/webp">WEBP</option>
+          </select>
 </div>
 
 <button class="accordion">Section 2</button>
@@ -200,6 +230,10 @@
   <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
 </div>
 
+<button class="accordion">Section 3</button>
+<div class="panel">
+  <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+</div>
 <button class="accordion">Section 3</button>
 <div class="panel">
   <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
@@ -265,11 +299,12 @@ for (i = 0; i < acc.length; i++) {
             2. Điều Chỉnh Cơ Bản
           </h2>
 
-          <div id="controls-list" class="space-y-4">
+          <div id="controls-list" class="space-y-4" >
             <div class="flex flex-col">
+              <h1> Độ sáng</h1>
               <label
                 for="brightness"
-                class="font-medium text-gray-700 flex justify-between"
+                class="font-medium text-gray-700 flex justify-between color-light"
                 >Độ Sáng:</label
               >
               <div class="flex items-center space-x-2">
@@ -282,10 +317,12 @@ for (i = 0; i < acc.length; i++) {
                   class="w-full p-2 border border-gray-300 rounded-lg text-sm"
                   oninput="applyFilters()"
                 />
+                <h1> %</h1>
                 <span class="text-sm text-gray-500">%</span>
               </div>
             </div>
             <div class="flex flex-col">
+              <h1> Độ Tương Phản:</h1>
               <label
                 for="contrast"
                 class="font-medium text-gray-700 flex justify-between"
@@ -302,9 +339,11 @@ for (i = 0; i < acc.length; i++) {
                   oninput="applyFilters()"
                 />
                 <span class="text-sm text-gray-500">%</span>
+                <h1> %</h1>
               </div>
             </div>
             <div class="flex flex-col">
+              <h1> Làm Mờ (Blur):</h1>
               <label
                 for="blur"
                 class="font-medium text-gray-700 flex justify-between"
@@ -322,6 +361,7 @@ for (i = 0; i < acc.length; i++) {
                   oninput="applyFilters()"
                 />
                 <span class="text-sm text-gray-500">px</span>
+                <h1> px </h1>
               </div>
             </div>
           </div>
@@ -491,274 +531,7 @@ for (i = 0; i < acc.length; i++) {
           🖼️ Trình Chỉnh Sửa Ảnh Thông Minh
         </h1>
 
-        <!-- <div id="editor-section" class="grid grid-cols-1 lg:grid-cols-3 gap-8"> -->
-          <!-- Cột 1: Controls -->
-          <!-- <div class="lg:col-span-1 space-y-6"> -->
-            <!-- Nhóm 1: Tải Ảnh và Tải Xuống -->
-            <!-- <div class="control-group">
-              <h2 class="text-xl font-semibold mb-3 text-indigo-600">
-                1. Quản Lý Ảnh
-              </h2>
-              <label
-                for="imageUpload"
-                class="btn-primary block text-center cursor-pointer"
-              >
-                Chọn và Tải Ảnh Lên
-              </label>
-              <input
-                type="file"
-                id="imageUpload"
-                accept="image/*"
-                class="hidden"
-                onchange="handleImageUpload(event)"
-              />
 
-              <button
-                id="downloadBtn"
-                class="btn-secondary w-full opacity-50 cursor-not-allowed"
-                disabled
-                onclick="downloadImage()"
-              >
-                📥 Tải Ảnh Đã Chỉnh Sửa
-              </button>
-              <select
-                id="downloadFormat"
-                class="w-full p-2 border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500"
-              >
-                <option value="image/png">PNG</option>
-                <option value="image/jpeg">JPEG</option>
-                <option value="image/gif">GIF</option>
-                <option value="image/webp">WEBP</option>
-              </select>
-            </div> -->
-
-            <!-- Nhóm 2: Điều Chỉnh Cơ Bản -->
-            <!-- <div class="control-group">
-              <h2 class="text-xl font-semibold mb-3 text-indigo-600">
-                2. Điều Chỉnh Cơ Bản
-              </h2>
-
-              <div id="controls-list" class="space-y-4">
-                <div class="flex flex-col">
-                  <label
-                    for="brightness"
-                    class="font-medium text-gray-700 flex justify-between"
-                    >Độ Sáng:</label
-                  >
-                  <div class="flex items-center space-x-2">
-                    <input
-                      type="number"
-                      id="brightness"
-                      min="0"
-                      max="200"
-                      value="100"
-                      class="w-full p-2 border border-gray-300 rounded-lg text-sm"
-                      oninput="applyFilters()"
-                    />
-                    <span class="text-sm text-gray-500">%</span>
-                  </div>
-                </div>
-                <div class="flex flex-col">
-                  <label
-                    for="contrast"
-                    class="font-medium text-gray-700 flex justify-between"
-                    >Độ Tương Phản:</label
-                  >
-                  <div class="flex items-center space-x-2">
-                    <input
-                      type="number"
-                      id="contrast"
-                      min="0"
-                      max="200"
-                      value="100"
-                      class="w-full p-2 border border-gray-300 rounded-lg text-sm"
-                      oninput="applyFilters()"
-                    />
-                    <span class="text-sm text-gray-500">%</span>
-                  </div>
-                </div>
-                <div class="flex flex-col">
-                  <label
-                    for="blur"
-                    class="font-medium text-gray-700 flex justify-between"
-                    >Làm Mờ (Blur):</label
-                  >
-                  <div class="flex items-center space-x-2">
-                    <input
-                      type="number"
-                      id="blur"
-                      min="0"
-                      max="10"
-                      step="0.1"
-                      value="0"
-                      class="w-full p-2 border border-gray-300 rounded-lg text-sm"
-                      oninput="applyFilters()"
-                    />
-                    <span class="text-sm text-gray-500">px</span>
-                  </div>
-                </div>
-              </div>
-            </div> -->
-
-            <!-- Nhóm 3: Biến Đổi & Cắt -->
-            <!-- <div class="control-group">
-              <h2 class="text-xl font-semibold mb-3 text-indigo-600">
-                3. Biến Đổi & Cắt
-              </h2>
-              <div class="grid grid-cols-2 gap-3">
-                <button class="btn-secondary" onclick="applyGrayscale()">
-                  ⚫ Chuyển Đen Trắng
-                </button>
-                <button class="btn-secondary" onclick="resetFilters()">
-                  🔄 Đặt Lại Hiệu Ứng
-                </button>
-                <button class="btn-secondary" onclick="rotateImage(90)">
-                  ↩️ Xoay (90°)
-                </button>
-                <button class="btn-secondary" onclick="flipImage('horizontal')">
-                  ↔️ Lật Ngang
-                </button>
-
-                <button
-                  id="cropModeBtn"
-                  class="btn-secondary col-span-2"
-                  onclick="toggleCropMode()"
-                >
-                  ✂️ Chế Độ Cắt
-                </button>
-                <button
-                  id="applyCropBtn"
-                  class="btn-primary col-span-2 opacity-50 cursor-not-allowed"
-                  disabled
-                  onclick="performCrop()"
-                >
-                  ✅ Áp Dụng Cắt
-                </button>
-              </div>
-            </div> -->
-
-            <!-- Nhóm 4: Thêm Chữ và Nền -->
-            <!-- <div class="control-group">
-              <h2 class="text-xl font-semibold mb-3 text-indigo-600">
-                4. Thêm/Sửa Chú Thích Văn Bản
-              </h2>
-
-              <textarea
-                id="textInput"
-                rows="2"
-                class="w-full p-2 border border-gray-300 rounded-lg text-sm"
-                placeholder="Nhập chữ cần thêm/sửa..."
-                oninput="syncInputsToActiveAnnotation()"
-              ></textarea>
-
-              <div class="grid grid-cols-2 gap-3">
-                <div class="flex flex-col">
-                  <label
-                    for="fontSize"
-                    class="text-xs font-medium text-gray-700"
-                    >Cỡ Chữ (px)</label
-                  >
-                  <input
-                    type="number"
-                    id="fontSize"
-                    value="30"
-                    min="10"
-                    max="200"
-                    class="p-2 border border-gray-300 rounded-lg text-sm"
-                    oninput="syncInputsToActiveAnnotation()"
-                  />
-                </div>
-                <div class="flex flex-col">
-                  <label
-                    for="textPositionX"
-                    class="text-xs font-medium text-gray-700"
-                    >Vị trí X</label
-                  >
-                  <input
-                    type="number"
-                    id="textPositionX"
-                    value="50"
-                    class="p-2 border border-gray-300 rounded-lg text-sm"
-                    oninput="syncInputsToActiveAnnotation()"
-                  />
-                </div>
-                <div class="flex flex-col">
-                  <label
-                    for="textColor"
-                    class="text-xs font-medium text-gray-700"
-                    >Màu Chữ</label
-                  >
-                  <input
-                    type="color"
-                    id="textColor"
-                    value="#FFFFFF"
-                    class="h-8 p-0 border border-gray-300 rounded-lg cursor-pointer"
-                    oninput="syncInputsToActiveAnnotation()"
-                  />
-                </div>
-                <div class="flex flex-col">
-                  <label
-                    for="textPositionY"
-                    class="text-xs font-medium text-gray-700"
-                    >Vị trí Y</label
-                  >
-                  <input
-                    type="number"
-                    id="textPositionY"
-                    value="50"
-                    class="p-2 border border-gray-300 rounded-lg text-sm"
-                    oninput="syncInputsToActiveAnnotation()"
-                  />
-                </div>
-              </div>
-              <div class="flex flex-col">
-                <label
-                  for="textBgColor"
-                  class="text-xs font-medium text-gray-700"
-                  >Màu Nền Chữ (Mặc định trong suốt nếu không phải màu
-                  đen)</label
-                >
-                <input
-                  type="color"
-                  id="textBgColor"
-                  value="#000000"
-                  class="h-8 p-0 border border-gray-300 rounded-lg cursor-pointer"
-                  oninput="syncInputsToActiveAnnotation()"
-                />
-              </div>
-
-              <button
-                id="addTextBtn"
-                class="btn-primary w-full"
-                onclick="addTextAnnotation()"
-              >
-                ➕ Thêm Chú Thích Mới
-              </button>
-
-              <div
-                id="annotation-info"
-                class="p-3 bg-gray-100 rounded-lg mt-3 text-sm hidden"
-              >
-                <p class="font-semibold text-gray-700 mb-2">
-                  Đang chọn lớp:
-                  <span id="activeTextId" class="font-mono text-indigo-600"
-                    >Không</span
-                  >
-                </p>
-                <button
-                  id="deleteTextBtn"
-                  class="btn-secondary text-red-600 border border-red-300 w-full"
-                  onclick="deleteActiveAnnotation()"
-                >
-                  🗑️ Xóa Lớp Chữ Đang Chọn
-                </button>
-              </div>
-
-              <p class="text-xs text-gray-500 pt-2 border-t mt-3">
-                💡 **Click vào chữ** để chọn và chỉnh sửa.
-              </p>
-            </div>
-          </div> -->
 
           <!-- Cột 2: Preview Ảnh -->
           <div class="lg:col-span-2">
